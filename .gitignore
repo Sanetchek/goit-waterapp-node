@@ -1,7 +1,13 @@
+# dependencies
 /node_modules
 
+# env
 .env
 
+# Junk
 .vscode
 .DS_Store
 .idea
+
+# pullrequests list
+pullrequests-list.txt
