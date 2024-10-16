@@ -8,6 +8,7 @@ import { env } from './utils/env.js';
 
 import notFoundHandler from './moddlewares/notFoundHandler.js';
 import errorHandler from './moddlewares/errorHandler.js';
+import UserCollection from './db/models/Users.js';
 
 const setupServer = () => {
   const app = express();
@@ -20,6 +21,24 @@ const setupServer = () => {
   //app.use('/api-docs', swaggerDocs());
   //app.use('/auth', authRouter);
   //app.use('/water', waterRouter);
+
+  app.get('/auth', async (req, res) => {
+    try {
+      const data = await UserCollection.find();
+      console.log(data);
+      res.json({
+        status: 200,
+        message: 'successfully found users',
+        data,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: 'Error retrieving users',
+      });
+    }
+  });
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);

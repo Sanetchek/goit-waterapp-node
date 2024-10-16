@@ -52,6 +52,6 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-const UserCollection = model('contact', userSchema);
+const UserCollection = model('user', userSchema);
 
 export default UserCollection;

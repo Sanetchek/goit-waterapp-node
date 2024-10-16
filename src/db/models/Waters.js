@@ -17,6 +17,6 @@ waterSchema.post('save', handleSaveError);
 waterSchema.pre('findOneAndUpdate', setUpdateOptions);
 waterSchema.post('findOneAndUpdate', handleSaveError);
 
-const WaterCollection = model('contact', waterSchema);
+const WaterCollection = model('water', waterSchema);
 
 export default WaterCollection;
