@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import authRouter from './routers/auth.js';
 /* import logger from './middlewares/logger.js';
 import swaggerDocs from'./middlewares/swaggerDocs.js';
 */
@@ -18,7 +19,7 @@ const setupServer = () => {
   app.use(cookieParser());
 
   //app.use('/api-docs', swaggerDocs());
-  //app.use('/auth', authRouter);
+  app.use('/auth', authRouter);
   //app.use('/water', waterRouter);
 
   app.use('*', notFoundHandler);
