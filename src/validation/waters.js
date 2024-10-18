@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const waterRateSchema = Joi.object({
-    waterRate: Joi.number().min(1).max(15000).required(),     
+    dailyNorm: Joi.number().min(1).max(15000).required(),     
 });
 
 export const waterNotesSchema = Joi.object({
