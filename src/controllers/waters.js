@@ -13,9 +13,11 @@ export const updateWaterRate = async (req, res, next) => {
         const { dailyNorm } = req.body;
         const userId = req.user._id;
 
+        const formattedDate = new Date().toISOString().slice(0, 16);
+
         const updatedWater = await WaterCollection.findOneAndUpdate(
             { owner: userId },
-            { dailyNorm },
+            { dailyNorm, date: formattedDate },
             { new: true, runValidators: true }
         );
 
@@ -24,7 +26,7 @@ export const updateWaterRate = async (req, res, next) => {
             owner: userId,
                 dailyNorm,
                 amount: 0,
-            date: new Date().toISOString().split("T")[0]
+            date: formattedDate,
             });
             return res.status(201).json({
             message: "Daily water norm created successfully",
