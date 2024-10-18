@@ -13,7 +13,8 @@ export const updateWaterRate = async (req, res, next) => {
         const { dailyNorm } = req.body;
         const userId = req.user._id;
 
-        const formattedDate = new Date().toISOString().slice(0, 16);
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16);
 
         const updatedWater = await WaterCollection.findOneAndUpdate(
             { owner: userId },
