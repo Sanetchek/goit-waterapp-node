@@ -1,0 +1,16 @@
+description: User not found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: User not found!
+          description: Description of the error, specifying that the user could not be found. This typically occurs when the provided user ID does not exist in the system or the user has been deleted.
+        errorCode:
+          type: string
+          example: USER_NOT_FOUND
