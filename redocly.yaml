@@ -10,7 +10,7 @@ theme:
   htmlTemplate: ./docs/index.html
   colors:
     primary:
-      main: '#32329f'
+      main: '#FFFFFF'
   generateCodeSamples:
     languages:
       - lang: curl

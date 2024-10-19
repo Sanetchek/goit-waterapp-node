@@ -8,15 +8,15 @@ content:
         - message
         - data
       properties:
-         status:
+        status:
           type: integer
           example: 500
           description: HTTP status code indicating an internal server error.
-          message:
+        message:
           type: string
           example: 'Internal server error.'
           description: A generic message indicating that the server encountered an unexpected error.
-          data:
+        data:
           type: object
           required:
             - message

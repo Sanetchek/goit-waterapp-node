@@ -1,0 +1,44 @@
+type: object
+required:
+  - name
+  - email
+  - password
+properties:
+  _id:
+    description: 'Unique identifier for the user'
+    type: string
+    example: '60d5f3f0987654321abcdef12'
+  name:
+    description: "User's name"
+    type: string
+    example: 'Sergio'
+  email:
+    description: "User's email address"
+    type: string
+    example: 'kriroy@example.com'
+  password:
+    description: "User's password"
+    type: string
+    example: 'passsword777'
+  gender:
+    description: "User's gender, must be either 'woman' or 'man'."
+    type: string
+    enum: ['woman', 'man']
+    example: 'woman'
+  weight:
+    description: "User's weight in kilograms. Default value is 0."
+    type: number
+    example: 60
+  sportTime:
+    description: "User's weekly sport time in hours. Default value is 0."
+    type: number
+    example: 6
+  dailyNormWater:
+    description: "User's daily water intake in milliliters. Default value is 1500."
+    type: number
+    example: 1500
+  avatar:
+    description: "URL to the user's avatar image stored in Cloudinary."
+    type: string
+    format: binary
+    example: 'https://res.cloudinary.com/dd6thsdhw/image/upload/image.png'
