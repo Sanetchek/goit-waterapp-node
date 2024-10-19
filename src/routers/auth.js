@@ -1,20 +1,20 @@
 import { Router } from 'express';
 import controllerWrapper from '../utils/controllerWrapper.js';
 import validateBody from '../utils/validateBody.js';
-import { userRegisterSchema, userLoginSchema } from '../validation/auth.js';
+import { userRegisterloginSchema } from '../validation/auth.js';
 import * as authControllers from '../controllers/auth.js';
 
 const authRouter = Router();
 
 authRouter.post(
   '/register',
-  validateBody(userRegisterSchema),
+  validateBody(userRegisterloginSchema),
   controllerWrapper(authControllers.registerController),
 );
 
 authRouter.post(
   '/login',
-  validateBody(userLoginSchema),
+  validateBody(userRegisterloginSchema),
   controllerWrapper(authControllers.loginController),
 );
 

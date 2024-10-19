@@ -6,7 +6,7 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true, // можливо і не обов'язково
+      default: null,
     },
     email: {
       type: String,
@@ -22,7 +22,6 @@ const userSchema = new Schema(
       type: String,
       enum: ['woman', 'man'],
       default: 'woman',
-      required: true,
     },
     weight: {
       type: Number,
