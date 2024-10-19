@@ -1,0 +1,45 @@
+tags:
+  - Water
+summary: Create and record dailyNorm water
+operationId: waterRate
+description: 'Endpoint to update the amount of water the user should consume.'
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - dailyNorm
+        properties:
+          dailyNorm:
+            description: 'daily rate of water in milliliters.'
+            type: number
+            example: 500
+responses:
+  '201':
+    description: 'Daily water norm created successfully'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'Daily water norm created successfully'
+            data:
+              type: object
+              $ref: ../../components/schemas/water.yaml
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

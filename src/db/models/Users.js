@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { handleSaveError, setUpdateOptions } from './hooks.js';
+import { emailRegexp } from '../../constants/users.js';
 
 const userSchema = new Schema(
   {
@@ -10,6 +11,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       unique: true,
+      match: emailRegexp,
       required: true,
     },
     password: {

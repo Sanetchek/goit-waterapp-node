@@ -56,8 +56,23 @@ responses:
                   description: JWT access token for authenticated requests.
 
   '401':
-    $ref: '..\..\components\responses\401.yaml'
-
+    description: Unauthorized error
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Email or password invalid'
+              description: Unauthorized error message.
   '404':
     $ref: '..\..\components\responses\404auth.yaml'
 
