@@ -27,6 +27,9 @@ paths:
   /auth/refresh:
     post:
       $ref: ../swagger/paths/auth/refresh.yaml
+  /water/rate:
+    patch:
+      $ref: ../swagger/paths/water/rate.yaml
 components:
   securitySchemes:
     bearerAuth:
