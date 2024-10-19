@@ -5,7 +5,6 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true, // можливо і не обов'язково
     },
     email: {
       type: String,
