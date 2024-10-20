@@ -16,9 +16,9 @@ export const updateWaterRate = async (req, res, next) => {
         }
 
         const { dailyNorm } = req.body;
-        const userId = req.user._id;
+        const ownerId = req.params.ownerId;
 
-         const result = await updateWaterRateService(userId, dailyNorm);
+         const result = await updateWaterRateService(ownerId, dailyNorm);
 
         if (result.message === "created") {
             return res.status(201).json({
@@ -44,9 +44,9 @@ export const addWaterNote = async (req, res, next) => {
         }
 
         const { waterVolume, date, dailyNorm } = req.body;  
-        const userId = req.user._id;
+        const ownerId = req.params.ownerId;
 
-        const waterNote = await addWaterNoteService(userId, waterVolume, date, dailyNorm); 
+        const waterNote = await addWaterNoteService(ownerId, waterVolume, date, dailyNorm); 
 
         return res.status(201).json({
             message: "Water consumption note added successfully",
@@ -66,7 +66,9 @@ export const updateWaterNote = async (req, res, next) => {
         }
 
         const { waterVolume } = req.body;
-        const updatedWaterNote = await updateWaterNoteService(waterNoteId, waterVolume);
+        const ownerId = req.params.ownerId;
+
+        const updatedWaterNote = await updateWaterNoteService(waterNoteId, waterVolume, ownerId);
 
         return res.status(200).json({
             message: "Water note updated successfully",
@@ -83,7 +85,9 @@ export const updateWaterNote = async (req, res, next) => {
 export const deleteWaterNote = async (req, res, next) => {
     try {
         const { waterNoteId } = req.params;
-        await deleteWaterNoteService(waterNoteId);
+        const ownerId = req.params.ownerId;
+
+        await deleteWaterNoteService(waterNoteId, ownerId);
 
         return res.status(200).json({
             message: "Water note deleted successfully",
