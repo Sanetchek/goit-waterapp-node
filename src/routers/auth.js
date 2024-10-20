@@ -2,7 +2,8 @@ import { Router } from 'express';
 import controllerWrapper from '../utils/controllerWrapper.js';
 import validateBody from '../utils/validateBody.js';
 import {
-  userRegisterloginSchema,
+  userRegisterSchema,
+  userloginSchema,
   sendResetEmailSchema,
   resetPasswordSchema,
 } from '../validation/auth.js';
@@ -12,13 +13,13 @@ const authRouter = Router();
 
 authRouter.post(
   '/register',
-  validateBody(userRegisterloginSchema),
+  validateBody(userRegisterSchema),
   controllerWrapper(authControllers.registerController),
 );
 
 authRouter.post(
   '/login',
-  validateBody(userRegisterloginSchema),
+  validateBody(userloginSchema),
   controllerWrapper(authControllers.loginController),
 );
 
