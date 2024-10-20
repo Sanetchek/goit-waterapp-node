@@ -6,7 +6,7 @@ import waterRouter from './routers/water.js';
 /* import logger from './middlewares/logger.js';
 import swaggerDocs from'./middlewares/swaggerDocs.js';
 */
-// import { env } from './utils/env.js';
+import { env } from './utils/env.js';
 
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
