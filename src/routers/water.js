@@ -19,12 +19,12 @@ import validateBody from "../utils/validateBody.js";
 
 const waterRouter = express.Router();
 
-waterRouter.patch("/:ownerId/rate", authenticate, validateBody(waterRateSchema), controllerWrapper(updateWaterRate));
+waterRouter.patch("/rate", authenticate, validateBody(waterRateSchema), controllerWrapper(updateWaterRate));
 
-waterRouter.post("/:ownerId", authenticate, validateBody(waterNotesSchema), controllerWrapper(addWaterNote));
+waterRouter.post("/", authenticate, validateBody(waterNotesSchema), controllerWrapper(addWaterNote));
 
-waterRouter.patch("/:ownerId/note/:waterNoteId", authenticate, validateBody(waterNotesSchema), controllerWrapper(updateWaterNote));
+waterRouter.patch("/:waterNoteId", authenticate, validateBody(waterNotesSchema), controllerWrapper(updateWaterNote));
 
-waterRouter.delete("/:ownerId/note/:waterNoteId", authenticate, controllerWrapper(deleteWaterNote));
+waterRouter.delete("/:waterNoteId", authenticate, controllerWrapper(deleteWaterNote));
 
 export default waterRouter;

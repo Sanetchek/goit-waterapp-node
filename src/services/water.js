@@ -75,12 +75,10 @@ export const addWaterNoteService = async (userId, waterVolume, date, dailyNorm) 
     return waterNote;
 };
 
-export const updateWaterNoteService = async (waterNoteId, waterVolume, userId) => {
-    const currentDate = new Date();
-    const formattedDate = currentDate
-        .toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" })
-        .replace(" ", "T")
-        .slice(0, 16);
+export const updateWaterNoteService = async (waterNoteId, waterVolume, userId, date) => {
+   const formattedDate = date
+        ? new Date(date).toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16)
+        : new Date().toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16);
     
     const waterNote = await WaterCollection.findOne({ _id: waterNoteId, owner: userId });
     if (!waterNote) {
