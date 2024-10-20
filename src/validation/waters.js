@@ -7,6 +7,7 @@ export const waterRateSchema = Joi.object({
 export const waterNotesSchema = Joi.object({
     waterVolume: Joi.number().min(1).max(5000).required(),
     date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/).required(),
+    dailyNorm: Joi.number().min(1).max(15000).optional(),
 });
 
 
