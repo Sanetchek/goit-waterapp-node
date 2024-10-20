@@ -1,0 +1,38 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Watertrack app
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: This is a documentation of my Watertrack app
+tags:
+  - name: Auth
+    description: Authentication operations.
+  - name: Water
+    description: Operations related to tracking changes in water standards in the body.
+servers:
+  - url: http://localhost:5050
+  - url: https://waterapp-hfy2.onrender.com
+paths:
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+  /water/rate:
+    patch:
+      $ref: ../swagger/paths/water/rate.yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

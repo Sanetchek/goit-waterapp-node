@@ -1,0 +1,75 @@
+tags:
+  - Auth
+
+summary: Register a new User
+operationId: registerUser
+description: Register a new user with the provided email and password.
+security:
+  - bearerAuth: []
+requestBody:
+  description: New user registartion details.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - password
+        properties:
+          name:
+            type: string
+            example: 'Bloger'
+            description: 'Name of the user'
+          email:
+            type: string
+            example: 'popogaga@gmail.com'
+            description: 'Email adress of the user'
+          password:
+            type: string
+            minLength: 8
+            maxLength: 64
+            example: 'password123'
+            description: 'Password of the user'
+
+responses:
+  '201':
+    description: Successfully registered a user.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+              description: HTTP status code indicating successful registration.
+            message:
+              type: string
+              example: 'Successfully registered a new user!'
+              description: Confirmation message of successful registration.
+            data:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  example: 'Bloger'
+                  description: The name of the new registered user.
+                email:
+                  type: string
+                  example: 'popogaga@gmail.com'
+                  description: The email address of the new registered user.
+                data:
+                  $ref: ..\..\components\schemas\user.yaml
+  '409':
+    $ref: '../../components/responses/409.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

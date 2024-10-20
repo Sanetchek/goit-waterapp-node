@@ -4,6 +4,8 @@ export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
 
 export const TEMP_UPLOAD_DIR = path.resolve('temp');
 
+export const SWAGGER_PATH = path.resolve('docs', 'swagger.json');
+
 export const UPLOAD_DIR = path.resolve('uploads');
 
 export const SMTP = {

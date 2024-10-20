@@ -1,0 +1,71 @@
+tags:
+  - Auth
+summary: Refresh user session
+operationId: refreshSession
+description: Refresh the user session and recive a new access token.
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successfully refreshed a session.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully refreshed a session!'
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmY4NzQ4NTkyZTcwZjg4ZTRlODk4ZjAiLCJlbWFpbCI6ImFydGVtLmZzb24xMDNAdWtyLm5ldCIsImlhdCI6MTcyODAzMzAzNywiZXhwIjoxNzI4MDMzMzM3fQ.snMULCyHu4X2YUqBRBeQRY87rGZSZaMi2ajQ5c9DxUE'
+  '401':
+    description: 'Unauthorized. Session not found or session expired.'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              enum:
+                - 'Session not found'
+                - 'Session expired'
+              example: 'Session not found or expired'
+  '500':
+    description: Internal server error.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              enum:
+                - 'Internal server error'
+                - 'Cannot read refreshTokenValidUntil'
+              example: 'Internal server error or Cannot read refreshTokenValidUntil'

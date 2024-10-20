@@ -1,0 +1,80 @@
+tags:
+  - Auth
+summary: Login user
+operationId: loginUser
+description: 'Login a user with their email and password.'
+security: []
+requestBody:
+  description: User login details.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            description: "User's email. It must be a valid email format."
+            type: string
+            example: 'johndoe@gmail.com'
+          password:
+            description: "User's password must be between 8 and 30 characters long and cannot be empty."
+            type: string
+            minLength: 8
+            maxLength: 64
+            example: 'password123'
+responses:
+  '200':
+    description: Successfully logged in the user.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating successful login.
+            message:
+              type: string
+              example: 'Successfully logged in a user!'
+              description: Confirmation message of successful login.
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKQ66B8w87W5Y1Pfe0xgX1MP8'
+                  description: JWT access token for authenticated requests.
+
+  '401':
+    description: Unauthorized error
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Email or password invalid'
+              description: Unauthorized error message.
+  '404':
+    $ref: '..\..\components\responses\404auth.yaml'
+
+  '500':
+    $ref: '../../components/responses/500.yaml'
