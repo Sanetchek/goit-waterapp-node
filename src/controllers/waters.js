@@ -43,10 +43,9 @@ export const addWaterNote = async (req, res, next) => {
             return next(createHttpError(400, `Validation error: ${error.details[0].message}`));
         }
 
-        const { waterVolume, date, dailyNorm } = req.body;  
-        const userId = req.user._id;
-
-        const waterNote = await addWaterNoteService(userId, waterVolume, date, dailyNorm); 
+        const { amount, date, dailyNorm, owner } = req.body;  
+            
+        const waterNote = await addWaterNoteService(owner, amount, date, dailyNorm); 
 
         return res.status(201).json({
             message: "Water consumption note added successfully",
@@ -65,10 +64,10 @@ export const updateWaterNote = async (req, res, next) => {
             return next(createHttpError(400, `Validation error: ${error.details[0].message}`));
         }
 
-        const { waterVolume, date } = req.body;
+        const { amount, date } = req.body;
         const userId = req.user._id;
 
-        const updatedWaterNote = await updateWaterNoteService(waterNoteId, waterVolume, userId, date);
+        const updatedWaterNote = await updateWaterNoteService(waterNoteId, amount, userId, date);
 
         return res.status(200).json({
             message: "Water note updated successfully",
