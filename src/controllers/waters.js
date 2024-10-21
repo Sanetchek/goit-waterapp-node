@@ -65,8 +65,10 @@ export const updateWaterNote = async (req, res, next) => {
             return next(createHttpError(400, `Validation error: ${error.details[0].message}`));
         }
 
-        const { waterVolume } = req.body;
-        const updatedWaterNote = await updateWaterNoteService(waterNoteId, waterVolume);
+        const { waterVolume, date } = req.body;
+        const userId = req.user._id;
+
+        const updatedWaterNote = await updateWaterNoteService(waterNoteId, waterVolume, userId, date);
 
         return res.status(200).json({
             message: "Water note updated successfully",
@@ -83,7 +85,9 @@ export const updateWaterNote = async (req, res, next) => {
 export const deleteWaterNote = async (req, res, next) => {
     try {
         const { waterNoteId } = req.params;
-        await deleteWaterNoteService(waterNoteId);
+        const userId = req.user._id;
+
+        await deleteWaterNoteService(waterNoteId, userId);
 
         return res.status(200).json({
             message: "Water note deleted successfully",
