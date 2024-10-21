@@ -50,7 +50,7 @@ export const updateWaterRateService = async (userId, dailyNorm) => {
     return { message: "updated", data: updatedWater };
 };
 
-export const addWaterNoteService = async (userId, waterVolume, date, dailyNorm) => {
+export const addWaterNoteService = async (userId, amount, date, dailyNorm) => {
     const formattedDate = date
         ? new Date(date).toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16)
         : new Date().toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16);
@@ -67,7 +67,7 @@ export const addWaterNoteService = async (userId, waterVolume, date, dailyNorm) 
 
     const waterNote = await WaterCollection.create({
         owner: userId,
-        amount: waterVolume,
+        amount: amount,
         dailyNorm: userWaterRate ? userWaterRate.dailyNorm : dailyNorm || 0,
         date: formattedDate,
     });
@@ -75,7 +75,7 @@ export const addWaterNoteService = async (userId, waterVolume, date, dailyNorm) 
     return waterNote;
 };
 
-export const updateWaterNoteService = async (waterNoteId, waterVolume, userId, date) => {
+export const updateWaterNoteService = async (waterNoteId, amount, userId, date) => {
    const formattedDate = date
         ? new Date(date).toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16)
         : new Date().toLocaleString("sv-SE", { timeZone: "Europe/Kyiv" }).replace(" ", "T").slice(0, 16);
@@ -88,7 +88,7 @@ export const updateWaterNoteService = async (waterNoteId, waterVolume, userId, d
     const updatedWaterNote = await WaterCollection.findByIdAndUpdate(
         waterNoteId,
         {
-            amount: waterVolume,
+            amount: amount,
             date: formattedDate,
         },
         {
