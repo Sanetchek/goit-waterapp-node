@@ -51,12 +51,7 @@ export const updateWaterRateService = async (userId, dailyNorm) => {
   return { message: 'updated', data: updatedWater };
 };
 
-export const addWaterNoteService = async (
-  userId,
-  waterVolume,
-  date,
-  dailyNorm,
-) => {
+export const addWaterNoteService = async (userId, amount, date, dailyNorm) => {
   const formattedDate = date
     ? new Date(date)
         .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
@@ -79,7 +74,7 @@ export const addWaterNoteService = async (
 
   const waterNote = await WaterCollection.create({
     owner: userId,
-    amount: waterVolume,
+    amount: amount,
     dailyNorm: userWaterRate ? userWaterRate.dailyNorm : dailyNorm || 0,
     date: formattedDate,
   });
@@ -87,17 +82,34 @@ export const addWaterNoteService = async (
   return waterNote;
 };
 
-export const updateWaterNoteService = async (waterNoteId, waterVolume) => {
-  const currentDate = new Date();
-  const formattedDate = currentDate
-    .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
-    .replace(' ', 'T')
-    .slice(0, 16);
+export const updateWaterNoteService = async (
+  waterNoteId,
+  amount,
+  userId,
+  date,
+) => {
+  const formattedDate = date
+    ? new Date(date)
+        .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
+        .replace(' ', 'T')
+        .slice(0, 16)
+    : new Date()
+        .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
+        .replace(' ', 'T')
+        .slice(0, 16);
+
+  const waterNote = await WaterCollection.findOne({
+    _id: waterNoteId,
+    owner: userId,
+  });
+  if (!waterNote) {
+    throw createHttpError(404, 'Water note not found or access denied');
+  }
 
   const updatedWaterNote = await WaterCollection.findByIdAndUpdate(
     waterNoteId,
     {
-      amount: waterVolume,
+      amount: amount,
       date: formattedDate,
     },
     {
@@ -106,14 +118,18 @@ export const updateWaterNoteService = async (waterNoteId, waterVolume) => {
     },
   );
 
-  if (!updatedWaterNote) {
-    throw createHttpError(404, 'Water note not found');
-  }
-
   return updatedWaterNote;
 };
 
-export const deleteWaterNoteService = async (waterNoteId) => {
+export const deleteWaterNoteService = async (waterNoteId, userId) => {
+  const waterNote = await WaterCollection.findOne({
+    _id: waterNoteId,
+    owner: userId,
+  });
+  if (!waterNote) {
+    throw createHttpError(404, 'Water note not found or access denied');
+  }
+
   const deletedWaterNote = await WaterCollection.findByIdAndDelete(waterNoteId);
 
   if (!deletedWaterNote) {

@@ -46,15 +46,9 @@ export const addWaterNote = async (req, res, next) => {
       );
     }
 
-    const { waterVolume, date, dailyNorm } = req.body;
-    const userId = req.user._id;
+    const { amount, date, dailyNorm, owner } = req.body;
 
-    const waterNote = await addWaterNoteService(
-      userId,
-      waterVolume,
-      date,
-      dailyNorm,
-    );
+    const waterNote = await addWaterNoteService(owner, amount, date, dailyNorm);
 
     return res.status(201).json({
       message: 'Water consumption note added successfully',
@@ -75,10 +69,14 @@ export const updateWaterNote = async (req, res, next) => {
       );
     }
 
-    const { waterVolume } = req.body;
+    const { amount, date } = req.body;
+    const userId = req.user._id;
+
     const updatedWaterNote = await updateWaterNoteService(
       waterNoteId,
-      waterVolume,
+      amount,
+      userId,
+      date,
     );
 
     return res.status(200).json({
@@ -96,7 +94,9 @@ export const updateWaterNote = async (req, res, next) => {
 export const deleteWaterNote = async (req, res, next) => {
   try {
     const { waterNoteId } = req.params;
-    await deleteWaterNoteService(waterNoteId);
+    const userId = req.user._id;
+
+    await deleteWaterNoteService(waterNoteId, userId);
 
     return res.status(200).json({
       message: 'Water note deleted successfully',
