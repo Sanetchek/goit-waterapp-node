@@ -12,7 +12,6 @@ tags:
   - name: Water
     description: Operations related to tracking changes in water standards in the body.
 servers:
-  - url: http://localhost:5050
   - url: https://waterapp-hfy2.onrender.com
 paths:
   /auth/register:
@@ -30,6 +29,14 @@ paths:
   /water/rate:
     patch:
       $ref: ../swagger/paths/water/rate.yaml
+  /water:
+    post:
+      $ref: ../swagger/paths/water/postWater.yaml
+  /water/{id}:
+    patch:
+      $ref: ../swagger/paths/water/{id}/patchWaterNoteId.yaml
+    delete:
+      $ref: ../swagger/paths/water/{id}/deleteWaterNoteId.yaml
 components:
   securitySchemes:
     bearerAuth:

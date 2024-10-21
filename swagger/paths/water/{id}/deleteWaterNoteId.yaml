@@ -1,0 +1,23 @@
+tags:
+  - Water
+summary: Delete a water record
+operationId: deleteWater
+description: 'Delete a water record. This endpoint requires the user to be logged in.'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '671668d6292dd17c2bd2e0fc'
+responses:
+  '204':
+    description: 'Water note deleted successfully'
+  '401':
+    description: Unauthorized error
+  '404':
+    $ref: '../../../components/responses/404auth.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'
