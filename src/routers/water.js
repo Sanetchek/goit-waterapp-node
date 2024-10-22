@@ -4,7 +4,8 @@ import {
     updateWaterRate,
     addWaterNote,
     updateWaterNote,
-    deleteWaterNote
+    deleteWaterNote,
+    getTodayWaterConsumption
 } from "../controllers/waters.js";
 
 import authenticate from "../middlewares/authenticate.js";
@@ -26,5 +27,7 @@ waterRouter.post("/", authenticate, validateBody(waterNotesSchema), controllerWr
 waterRouter.patch("/:waterNoteId", authenticate, validateBody(waterNotesSchema), controllerWrapper(updateWaterNote));
 
 waterRouter.delete("/:waterNoteId", authenticate, controllerWrapper(deleteWaterNote));
+
+waterRouter.get("/today", authenticate, controllerWrapper(getTodayWaterConsumption));
 
 export default waterRouter;

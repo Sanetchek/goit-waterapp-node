@@ -114,3 +114,22 @@ export const deleteWaterNoteService = async (waterNoteId, userId) => {
 
     return deletedWaterNote;
 };
+
+export const getUserWaterConsumptionForToday = async (userId) => {
+    const currentDate = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+
+    const waterNotes = await WaterCollection.find({
+        owner: userId,
+        date: { $regex: `^${currentDate}` },
+    });
+
+    const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
+
+    const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
+
+    return {
+        totalAmount,
+        dailyNorm,
+        notes: waterNotes,
+    };
+};
