@@ -12,24 +12,37 @@ tags:
   - name: Water
     description: Operations related to tracking changes in water standards in the body.
 servers:
-  - url: http://localhost:5050
   - url: https://waterapp-hfy2.onrender.com
 paths:
   /auth/register:
     post:
-      $ref: ../swagger/paths/auth/register.yaml
+      $ref: '../swagger/paths/auth/register.yaml'
   /auth/login:
     post:
-      $ref: ../swagger/paths/auth/login.yaml
+      $ref: '../swagger/paths/auth/login.yaml'
   /auth/logout:
     post:
-      $ref: ../swagger/paths/auth/logout.yaml
+      $ref: '../swagger/paths/auth/logout.yaml'
   /auth/refresh:
     post:
-      $ref: ../swagger/paths/auth/refresh.yaml
+      $ref: '../swagger/paths/auth/refresh.yaml'
+  /auth/send-reset-email:
+    post:
+      $ref: '../swagger/paths/auth/send-reset-email.yaml'
+  /auth/reset-pwd:
+    post:
+      $ref: '../swagger/paths/auth/reset-pwd.yaml'
   /water/rate:
     patch:
-      $ref: ../swagger/paths/water/rate.yaml
+      $ref: '../swagger/paths/water/rate.yaml'
+  /water:
+    post:
+      $ref: '../swagger/paths/water/postWater.yaml'
+  /water/{id}:
+    patch:
+      $ref: '../swagger/paths/water/{id}/patchWaterNoteId.yaml'
+    delete:
+      $ref: '../swagger/paths/water/{id}/deleteWaterNoteId.yaml'
 components:
   securitySchemes:
     bearerAuth:
