@@ -1,13 +1,13 @@
-import Users from '../db/models/Users.js';
+import UsersCollection from '../db/models/Users.js';
 import WaterCollection from '../db/models/Waters.js';
 import createHttpError from 'http-errors';
 
 export const getUserWaterRate = (filter) => {
-  return Users.findOne(filter);
+  return UsersCollection.findOne(filter);
 };
 
 export const updateUserWaterRate = async (filter, data, options = {}) => {
-  const updatedUser = await Users.findOneAndUpdate(filter, data, {
+  const updatedUser = await UsersCollection.findOneAndUpdate(filter, data, {
     includeResultMetadata: true,
     ...options,
   });
@@ -19,33 +19,19 @@ export const updateUserWaterRate = async (filter, data, options = {}) => {
   return updatedUser;
 };
 
-export const updateWaterRateService = async (userId, dailyNorm) => {
-  const currentDate = new Date();
-  const formattedDate = currentDate
-    .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
-    .replace(' ', 'T')
-    .slice(0, 16);
-
-  const updatedWater = await WaterCollection.findOneAndUpdate(
-    { owner: userId },
+export const updateWaterRateService = async (userId, dailyNormWater) => {
+  const updatedWater = await UsersCollection.findOneAndUpdate(
+    { _id: userId },
     {
-      dailyNorm,
-      date: formattedDate,
+      dailyNormWater,
     },
     {
       new: true,
-      runValidators: true,
     },
   );
 
   if (!updatedWater) {
-    const newWaterEntry = await WaterCollection.create({
-      owner: userId,
-      dailyNorm,
-      amount: 0,
-      date: formattedDate,
-    });
-    return { message: 'created', data: newWaterEntry };
+    return { message: 'User not found', data: null };
   }
 
   return { message: 'updated', data: updatedWater };
@@ -136,24 +122,26 @@ export const deleteWaterNoteService = async (waterNoteId, userId) => {
     throw createHttpError(404, 'Water note not found');
   }
 
-    return deletedWaterNote;
+  return deletedWaterNote;
 };
 
 export const getUserWaterConsumptionForToday = async (userId) => {
-    const currentDate = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+  const currentDate = new Date().toLocaleDateString('sv-SE', {
+    timeZone: 'Europe/Kyiv',
+  });
 
-    const waterNotes = await WaterCollection.find({
-        owner: userId,
-        date: { $regex: `^${currentDate}` },
-    });
+  const waterNotes = await WaterCollection.find({
+    owner: userId,
+    date: { $regex: `^${currentDate}` },
+  });
 
-    const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
+  const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
 
-    const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
+  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
 
-    return {
-        totalAmount,
-        dailyNorm,
-        notes: waterNotes,
-    };
+  return {
+    totalAmount,
+    dailyNorm,
+    notes: waterNotes,
+  };
 };
