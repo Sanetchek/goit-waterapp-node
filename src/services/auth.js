@@ -44,7 +44,24 @@ export const register = async (payload) => {
   });
   delete data._doc.password;
 
-  return data._doc;
+  const newUser = data._doc;
+
+  const sessionData = createSession();
+
+  const userSession = await SessionCollection.create({
+    userId: newUser._id,
+    ...sessionData,
+  });
+
+  delete newUser._id;
+  delete newUser.password;
+  delete newUser.createdAt;
+  delete newUser.updatedAt;
+
+  return {
+    user: newUser,
+    session: userSession,
+  };
 };
 
 export const login = async (payload) => {
@@ -66,7 +83,21 @@ export const login = async (payload) => {
     userId: user._id,
     ...sessionData,
   });
-  return userSession;
+
+  // Shallow copy the user object and remove sensitive fields
+  const cleanUser = {
+    ...user._doc
+  }; // _doc is a common property for Mongoose models
+
+  delete cleanUser._id;
+  delete cleanUser.password;
+  delete cleanUser.createdAt;
+  delete cleanUser.updatedAt;
+
+  return {
+    user: cleanUser,
+    session: userSession,
+  };
 };
 
 export const findSessionByAccessToken = (accessToken) =>
