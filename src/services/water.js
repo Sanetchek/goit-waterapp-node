@@ -193,7 +193,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
 
         const noteDateObj = new Date(noteDate);
         const day = noteDateObj.getDate(); 
-        const month = noteDateObj.toLocaleString('default', { month: 'long', locale: 'en' });
+        const month = noteDateObj.toLocaleString('en-US', { month: 'long' });
         const formattedDate = `${day}, ${month}`;
 
         return {
