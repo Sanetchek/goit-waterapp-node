@@ -1,5 +1,5 @@
 tags:
-  - Auth
+  - User
 summary: Update a user
 operationId: updateUser
 description: 'Updating user information or one of the contact information fields. This endpoint requires the user to be logged in.'

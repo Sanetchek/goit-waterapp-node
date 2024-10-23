@@ -16,7 +16,11 @@ userRouter.get(
   controllerWrapper(userController.getUserByIdController),
 );
 
-userRouter.put('/:id', controllerWrapper(userController.upsertUserController));
+userRouter.put(
+  '/:id',
+  isValidId,
+  controllerWrapper(userController.upsertUserController),
+);
 
 userRouter.patch(
   '/:id',
