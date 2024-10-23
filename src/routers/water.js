@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 
 import {
     updateWaterRate,
@@ -9,15 +9,12 @@ import {
     getMonthlyWaterConsumption
 } from "../controllers/waters.js";
 
-import authenticate from "../middlewares/authenticate.js";
+import authenticate from '../middlewares/authenticate.js';
 
-import {
-    waterRateSchema,
-    waterNotesSchema
-} from "../validation/waters.js";
+import { waterRateSchema, waterNotesSchema } from '../validation/waters.js';
 
-import controllerWrapper from "../utils/controllerWrapper.js";
-import validateBody from "../utils/validateBody.js";
+import controllerWrapper from '../utils/controllerWrapper.js';
+import validateBody from '../utils/validateBody.js';
 
 const waterRouter = express.Router();
 
