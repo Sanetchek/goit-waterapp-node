@@ -18,7 +18,7 @@ requestBody:
           email:
             description: "User's email. It must be a valid email format."
             type: string
-            example: 'johndoe@gmail.com'
+            example: 'user-name15@domain.org'
           password:
             description: "User's password must be between 8 and 30 characters long and cannot be empty."
             type: string
