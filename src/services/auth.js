@@ -53,6 +53,7 @@ export const register = async (payload) => {
     ...sessionData,
   });
 
+  delete newUser._id;
   delete newUser.password;
   delete newUser.createdAt;
   delete newUser.updatedAt;
@@ -88,6 +89,7 @@ export const login = async (payload) => {
     ...user._doc
   }; // _doc is a common property for Mongoose models
 
+  delete cleanUser._id;
   delete cleanUser.password;
   delete cleanUser.createdAt;
   delete cleanUser.updatedAt;
