@@ -3,7 +3,8 @@ import {
     addWaterNoteService,
     updateWaterNoteService,
     deleteWaterNoteService,
-    getUserWaterConsumptionForToday
+    getTodayWaterConsumptionService,
+    getMonthlyWaterConsumptionService
 } from "../services/water.js";
 
 export const updateWaterRate = async (req, res) => {
@@ -64,7 +65,7 @@ export const deleteWaterNote = async (req, res) => {
 export const getTodayWaterConsumption = async (req, res) => {
     const userId = req.user._id;
 
-    const { totalAmount, dailyNorm, notes } = await getUserWaterConsumptionForToday(userId);
+    const { totalAmount, dailyNorm, notes } = await getTodayWaterConsumptionService(userId);
 
     const percentage = dailyNorm ? ((totalAmount / dailyNorm) * 100).toFixed(2) : 0;
 
@@ -76,5 +77,17 @@ export const getTodayWaterConsumption = async (req, res) => {
             dailyNorm,
             notes,
         },
+    });
+};
+
+export const getMonthlyWaterConsumption = async (req, res) => {
+    const userId = req.user._id;
+    const { year, month } = req.params;
+
+    const monthlyData = await getMonthlyWaterConsumptionService(userId, year, month);
+
+    return res.status(200).json({
+        message: "Monthly water consumption data",
+        data: monthlyData,
     });
 };

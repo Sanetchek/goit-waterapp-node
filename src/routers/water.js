@@ -5,7 +5,8 @@ import {
     addWaterNote,
     updateWaterNote,
     deleteWaterNote,
-    getTodayWaterConsumption
+    getTodayWaterConsumption,
+    getMonthlyWaterConsumption
 } from "../controllers/waters.js";
 
 import authenticate from "../middlewares/authenticate.js";
@@ -29,5 +30,7 @@ waterRouter.patch("/:waterNoteId", authenticate, validateBody(waterNotesSchema),
 waterRouter.delete("/:waterNoteId", authenticate, controllerWrapper(deleteWaterNote));
 
 waterRouter.get("/today", authenticate, controllerWrapper(getTodayWaterConsumption));
+
+waterRouter.get("/month/:year/:month", authenticate, controllerWrapper(getMonthlyWaterConsumption));
 
 export default waterRouter;

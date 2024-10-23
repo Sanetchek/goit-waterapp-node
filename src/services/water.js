@@ -115,7 +115,7 @@ export const deleteWaterNoteService = async (waterNoteId, userId) => {
     return deletedWaterNote;
 };
 
-export const getUserWaterConsumptionForToday = async (userId) => {
+export const getTodayWaterConsumptionService = async (userId) => {
     const currentDate = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
 
     const waterNotes = await WaterCollection.find({
@@ -132,4 +132,53 @@ export const getUserWaterConsumptionForToday = async (userId) => {
         dailyNorm,
         notes: waterNotes,
     };
+};
+
+export const getMonthlyWaterConsumptionService = async (userId, year, month) => {
+    const startDate = new Date(year, month - 1, 1).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+    const endDate = new Date(year, month, 1).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+
+    const waterNotes = await WaterCollection.find({
+        owner: userId,
+        date: { $gte: startDate, $lt: endDate }, 
+    });
+
+    if (waterNotes.length === 0) {
+        return [];
+    }
+
+    const dailyNorm = waterNotes[0].dailyNorm;
+
+    const groupedNotes = waterNotes.reduce((acc, note) => {
+        const noteDate = new Date(note.date).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+        
+        if (!acc[noteDate]) {
+            acc[noteDate] = { totalAmount: 0, consumptionCount: 0 };
+        }
+
+        acc[noteDate].totalAmount += note.amount;
+        acc[noteDate].consumptionCount += 1;
+
+        return acc;
+    }, {});
+
+    const monthlyData = Object.keys(groupedNotes).map(noteDate => {
+        const { totalAmount, consumptionCount } = groupedNotes[noteDate];
+        const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
+        
+
+        const noteDateObj = new Date(noteDate);
+        const day = noteDateObj.getDate(); 
+        const month = noteDateObj.toLocaleString('default', { month: 'long', locale: 'en' });
+        const formattedDate = `${day}, ${month}`;
+
+        return {
+            date: formattedDate,
+            dailyNorm: `${dailyNorm}`,
+            percentage: `${percentage}`,
+            consumptionCount: consumptionCount,
+        };
+    });
+
+    return monthlyData;
 };
