@@ -9,6 +9,8 @@ info:
 tags:
   - name: Auth
     description: Authentication operations.
+  - name: User
+    description: Operation with user.
   - name: Water
     description: Operations related to tracking changes in water standards in the body.
 servers:

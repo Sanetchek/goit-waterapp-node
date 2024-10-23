@@ -1,5 +1,5 @@
 tags:
-  - Auth
+  - User
 summary: Get user info
 operationId: getUserInfo
 description: 'Retrieve information about the authenticated user. This endpoint requires the user to be logged in.'
