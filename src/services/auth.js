@@ -53,6 +53,10 @@ export const register = async (payload) => {
     ...sessionData,
   });
 
+  delete newUser.password;
+  delete newUser.createdAt;
+  delete newUser.updatedAt;
+
   return {
     user: newUser,
     session: userSession,
@@ -78,8 +82,18 @@ export const login = async (payload) => {
     userId: user._id,
     ...sessionData,
   });
+
+  // Shallow copy the user object and remove sensitive fields
+  const cleanUser = {
+    ...user._doc
+  }; // _doc is a common property for Mongoose models
+
+  delete cleanUser.password;
+  delete cleanUser.createdAt;
+  delete cleanUser.updatedAt;
+
   return {
-    user: user,
+    user: cleanUser,
     session: userSession,
   };
 };
