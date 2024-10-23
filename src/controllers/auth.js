@@ -14,27 +14,33 @@ const setupSession = (res, session) => {
 };
 
 export const registerController = async (req, res) => {
-  const newUser = await authServices.register(req.body);
+  const data = await authServices.register(req.body);
+
   res.status(201).json({
     status: 201,
     message: 'Successfully registered a user!',
-    data: {
-      id: newUser._id,
+    user: {
+      name: data.user.name,
+      email: data.user.email,
     },
+    token: data.session.refreshToken,
   });
 };
 
 export const loginController = async (req, res) => {
-  const session = await authServices.login(req.body);
+  const data = await authServices.login(req.body);
+  console.log(data);
 
-  setupSession(res, session);
+  setupSession(res, data.session);
 
   res.json({
     status: 200,
     message: 'Successfully logged in an user!',
-    data: {
-      accessToken: session.accessToken,
+    user: {
+      name: data.user.name,
+      email: data.user.email,
     },
+    token: data.session.accessToken,
   });
 };
 
