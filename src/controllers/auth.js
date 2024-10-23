@@ -26,7 +26,6 @@ export const registerController = async (req, res) => {
 
 export const loginController = async (req, res) => {
   const data = await authServices.login(req.body);
-  console.log(data);
 
   setupSession(res, data.session);
 
