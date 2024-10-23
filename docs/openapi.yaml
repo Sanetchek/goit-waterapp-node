@@ -32,6 +32,13 @@ paths:
   /auth/reset-pwd:
     post:
       $ref: '../swagger/paths/auth/reset-pwd.yaml'
+  /user/{id}:
+    get:
+      $ref: '../swagger/paths/user/{id}/get.yaml'
+    put:
+      $ref: '../swagger/paths/user/{id}/put.yaml'
+    patch:
+      $ref: '../swagger/paths/user/{id}/patch.yaml'
   /water/rate:
     patch:
       $ref: '../swagger/paths/water/rate.yaml'

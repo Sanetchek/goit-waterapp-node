@@ -12,6 +12,10 @@ export const userloginSchema = Joi.object({
   password: Joi.string().min(8).required(64),
 });
 
+export const userWaterSchema = Joi.object({
+  dailyNormWater: Joi.number().min(1).max(15000).required(),
+});
+
 export const sendResetEmailSchema = Joi.object({
   email: Joi.string().email().required(),
 });

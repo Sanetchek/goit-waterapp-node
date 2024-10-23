@@ -1,0 +1,78 @@
+tags:
+  - Auth
+summary: Update a user
+operationId: updateUser
+description: 'Updating user information or one of the contact information fields. This endpoint requires the user to be logged in.'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '671668d6292dd17c2bd2e0fc'
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          email:
+            description: "User's email. It must be a valid email format."
+            type: string
+            example: 'user-name15@domain.org'
+          name:
+            description: "User's name must be between 3 and 32 characters long and cannot be empty."
+            type: string
+            minLength: 3
+            maxLength: 32
+            example: 'Robie Williams'
+          gender:
+            description: "User's gender must be 'woman' or 'man'."
+            type: string
+            enum: ['woman', 'man']
+            example: 'woman'
+          weight:
+            description: "User's weight in kilograms. Default value is 0."
+            type: number
+            example: 65
+          sportTime:
+            description: "User's weekly sport time in hours."
+            type: number
+            example: 5
+          dailyNormWater:
+            description: "User's dailyNorm water intake in milliliters. Default value is 1500."
+            type: number
+            example: 1500
+          avatar:
+            description: "User's avatar image file."
+            type: string
+            format: binary
+            example: 'avatar.jpg'
+responses:
+  '200':
+    description: 'User successfully patched. Returns a status code, a success message and user information.'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully updated a user!'
+            data:
+              $ref: ../../../components/schemas/user.yaml
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404user.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

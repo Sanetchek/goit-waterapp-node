@@ -12,11 +12,11 @@ const userSchema = new Schema(
       type: String,
       unique: true,
       match: emailRegexp,
-      required: true,
+      default: null,
     },
     password: {
       type: String,
-      required: true,
+      default: null,
     },
     gender: {
       type: String,
@@ -34,6 +34,11 @@ const userSchema = new Schema(
     dailyNormWater: {
       type: Number,
       default: 1500,
+    },
+    themeColor: {
+      type: String,
+      enum: ['light', 'dark'],
+      default: 'light',
     },
     avatar: {
       type: String,
