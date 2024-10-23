@@ -44,7 +44,19 @@ export const register = async (payload) => {
   });
   delete data._doc.password;
 
-  return data._doc;
+  const newUser = data._doc;
+
+  const sessionData = createSession();
+
+  const userSession = await SessionCollection.create({
+    userId: newUser._id,
+    ...sessionData,
+  });
+
+  return {
+    user: newUser,
+    session: userSession,
+  };
 };
 
 export const login = async (payload) => {
@@ -66,7 +78,10 @@ export const login = async (payload) => {
     userId: user._id,
     ...sessionData,
   });
-  return userSession;
+  return {
+    user: user,
+    session: userSession,
+  };
 };
 
 export const findSessionByAccessToken = (accessToken) =>
