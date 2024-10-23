@@ -546,7 +546,7 @@
         "tags": [
           "Water"
         ],
-        "summary": "Create and record dailyNorm water",
+        "summary": "Update and record dailyNorm water",
         "operationId": "waterRate",
         "description": "Endpoint to update the amount of water the user should consume.",
         "security": [
@@ -561,10 +561,10 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "dailyNorm"
+                  "dailyNormWater"
                 ],
                 "properties": {
-                  "dailyNorm": {
+                  "dailyNormWater": {
                     "description": "daily rate of water in milliliters.",
                     "type": "number",
                     "example": 500
@@ -575,8 +575,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Daily water norm created successfully",
+          "200": {
+            "description": "Daily water norm updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -589,11 +589,11 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 201
+                      "example": 200
                     },
                     "message": {
                       "type": "string",
-                      "example": "Daily water norm created successfully"
+                      "example": "Daily water norm updated successfully"
                     },
                     "data": {
                       "type": "object",
