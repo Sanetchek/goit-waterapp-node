@@ -20,7 +20,7 @@ export const registerController = async (req, res) => {
     status: 201,
     message: 'Successfully registered a user!',
     user: data.user,
-    token: data.session.refreshToken,
+    token: data.session.accessToken,
   });
 };
 
