@@ -1,5 +1,5 @@
 tags:
-  - Auth
+  - User
 summary: Patch and update photo a user
 operationId: patchUser
 description: 'Update user avatar. This endpoint requires the user to be logged in.'

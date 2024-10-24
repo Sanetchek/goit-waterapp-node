@@ -20,6 +20,10 @@
       "description": "Authentication operations."
     },
     {
+      "name": "User",
+      "description": "Operation with user."
+    },
+    {
       "name": "Water",
       "description": "Operations related to tracking changes in water standards in the body."
     }
@@ -155,7 +159,7 @@
                   "email": {
                     "description": "User's email. It must be a valid email format.",
                     "type": "string",
-                    "example": "johndoe@gmail.com"
+                    "example": "user-name15@domain.org"
                   },
                   "password": {
                     "description": "User's password must be between 8 and 30 characters long and cannot be empty.",
@@ -534,6 +538,304 @@
           },
           "404": {
             "$ref": "#/components/responses/404auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get user info",
+        "operationId": "getUserInfo",
+        "description": "Retrieve information about the authenticated user. This endpoint requires the user to be logged in.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "671668d6292dd17c2bd2e0fc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user info. Returns a status code, a success message and user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully retrieved user info!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404user"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update a user",
+        "operationId": "updateUser",
+        "description": "Updating user information or one of the contact information fields. This endpoint requires the user to be logged in.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "671668d6292dd17c2bd2e0fc"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "User's email. It must be a valid email format.",
+                    "type": "string",
+                    "example": "user-name15@domain.org"
+                  },
+                  "name": {
+                    "description": "User's name must be between 3 and 32 characters long and cannot be empty.",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "example": "Robie Williams"
+                  },
+                  "gender": {
+                    "description": "User's gender must be 'woman' or 'man'.",
+                    "type": "string",
+                    "enum": [
+                      "woman",
+                      "man"
+                    ],
+                    "example": "woman"
+                  },
+                  "weight": {
+                    "description": "User's weight in kilograms. Default value is 0.",
+                    "type": "number",
+                    "example": 65
+                  },
+                  "sportTime": {
+                    "description": "User's weekly sport time in hours.",
+                    "type": "number",
+                    "example": 5
+                  },
+                  "dailyNormWater": {
+                    "description": "User's dailyNorm water intake in milliliters. Default value is 1500.",
+                    "type": "number",
+                    "example": 1500
+                  },
+                  "avatar": {
+                    "description": "User's avatar image file.",
+                    "type": "string",
+                    "format": "binary",
+                    "example": "avatar.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully patched. Returns a status code, a success message and user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully updated a user!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404user"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Patch and update photo a user",
+        "operationId": "patchUser",
+        "description": "Update user avatar. This endpoint requires the user to be logged in.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "671668d6292dd17c2bd2e0fc"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "User's email. It must be a valid email format.",
+                    "type": "string",
+                    "example": "user-name15@domain.org"
+                  },
+                  "name": {
+                    "description": "User's name must be between 3 and 32 characters long and cannot be empty.",
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
+                    "example": "Robie Williams"
+                  },
+                  "gender": {
+                    "description": "User's gender must be 'woman' or 'man'.",
+                    "type": "string",
+                    "enum": [
+                      "woman",
+                      "man"
+                    ],
+                    "example": "woman"
+                  },
+                  "weight": {
+                    "description": "User's weight in kilograms. Default value is 0.",
+                    "type": "number",
+                    "example": 65
+                  },
+                  "sportTime": {
+                    "description": "User's weekly sport time in hours.",
+                    "type": "number",
+                    "example": 5
+                  },
+                  "dailyNormWater": {
+                    "description": "User's dailyNorm water intake in milliliters. Default value is 1500.",
+                    "type": "number",
+                    "example": 1500
+                  },
+                  "avatar": {
+                    "description": "User's avatar image file.",
+                    "type": "string",
+                    "format": "binary",
+                    "example": "avatar.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully patched. Returns a status code, a success message and user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully patched a user!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404user"
           },
           "500": {
             "$ref": "#/components/responses/500"
@@ -1053,6 +1355,35 @@
                 "errorCode": {
                   "type": "string",
                   "example": "USER_NOT_FOUND"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404user": {
+        "description": "User not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {}
                 }
               }
             }
