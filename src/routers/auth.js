@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import controllerWrapper from '../utils/controllerWrapper.js';
 import validateBody from '../utils/validateBody.js';
+import authenticate from '../middlewares/authenticate.js';
 import {
   userRegisterSchema,
   userloginSchema,
@@ -10,6 +11,8 @@ import {
 import * as authControllers from '../controllers/auth.js';
 
 const authRouter = Router();
+
+authRouter.use(authenticate);
 
 authRouter.post(
   '/register',
