@@ -23,7 +23,7 @@ authRouter.post(
   controllerWrapper(authControllers.loginController),
 );
 
-authRouter.post(
+authRouter.get(
   '/refresh',
   controllerWrapper(authControllers.refreshController),
 );
