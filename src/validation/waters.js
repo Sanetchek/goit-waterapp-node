@@ -12,7 +12,6 @@ export const waterNotesSchema = Joi.object({
   dailyNorm: Joi.number().min(1).max(15000).optional(),
   owner: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
-    .required(),
 });
 /* export const waterUpdateNotesSchema = Joi.object({
   waterVolume: Joi.number().min(1).max(5000).required(),
