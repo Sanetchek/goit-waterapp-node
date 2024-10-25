@@ -1,21 +1,21 @@
 tags:
   - Water
-summary: Get water per day
-operationId: getWaterPerDay
-description: 'Retrieve water for a specific day. This endpoint requires the user to be logged in.'
+summary: Get water per month
+operationId: getWaterPerMonth
+description: 'Retrieve water for a specific month. This endpoint requires the user to be logged in.'
 security:
   - bearerAuth: []
 parameters:
   - in: path
     name: date
-    required: false
+    required: true
     schema:
       type: string
-      description: 'Date in ISO 8601 format (YYYY-MM-DD).'
-      example: '2024-09-20'
+      description: 'Date in ISO 8601 format (YYYY-MM).'
+      example: '2024-09'
 responses:
   '200':
-    description: 'Successfully retrieved water records for a specific day. Returns a status code, a success message and the records details.'
+    description: 'Successfully retrieved water records for a specific month. Returns a status code, a success message and the records details.'
     content:
       application/json:
         schema:

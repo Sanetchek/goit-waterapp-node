@@ -98,6 +98,26 @@ export const updateWaterNoteService = async (
         .replace(' ', 'T')
         .slice(0, 16);
 
+  /*  const waterNote = await WaterCollection.findOne({
+    owner: userId,
+    date: formattedDate,
+  });
+
+  if (waterNote) {
+    waterNote.amount += amount;
+    await waterNote.save();
+    console.log(waterNote);
+
+    return waterNote;
+  } else {
+    const newWaterNote = await WaterCollection.create({
+      owner: userId,
+      amount,
+      date: formattedDate,
+    });
+    return newWaterNote;
+  } */
+
   const waterNote = await WaterCollection.findOne({
     _id: waterNoteId,
     owner: userId,
@@ -136,73 +156,89 @@ export const deleteWaterNoteService = async (waterNoteId, userId) => {
     throw createHttpError(404, 'Water note not found');
   }
 
-    return deletedWaterNote;
+  return deletedWaterNote;
 };
 
 export const getTodayWaterConsumptionService = async (userId) => {
-    const currentDate = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+  const currentDate = new Date().toLocaleDateString('sv-SE', {
+    timeZone: 'Europe/Kyiv',
+  });
 
-    const waterNotes = await WaterCollection.find({
-        owner: userId,
-        date: { $regex: `^${currentDate}` },
-    });
+  const waterNotes = await WaterCollection.find({
+    owner: userId,
+    date: { $regex: `^${currentDate}` },
+  });
 
-    const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
+  const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
 
-    const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
+  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
 
-    return {
-        totalAmount,
-        dailyNorm,
-        notes: waterNotes,
-    };
+  return {
+    totalAmount,
+    dailyNorm,
+    notes: waterNotes,
+  };
 };
 
-export const getMonthlyWaterConsumptionService = async (userId, year, month) => {
-    const startDate = new Date(year, month - 1, 1).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
-    const endDate = new Date(year, month, 1).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
+export const getMonthlyWaterConsumptionService = async (
+  userId,
+  year,
+  month,
+) => {
+  const startDate = new Date(year, month - 1, 1).toLocaleDateString('sv-SE', {
+    timeZone: 'Europe/Kyiv',
+  });
+  const endDate = new Date(year, month, 1).toLocaleDateString('sv-SE', {
+    timeZone: 'Europe/Kyiv',
+  });
 
-    const waterNotes = await WaterCollection.find({
-        owner: userId,
-        date: { $gte: startDate, $lt: endDate }, 
+  const waterNotes = await WaterCollection.find({
+    owner: userId,
+    date: { $gte: startDate, $lt: endDate },
+  });
+
+  console.log(waterNotes);
+
+  if (waterNotes.length === 0) {
+    return [];
+  }
+
+  const dailyNorm = waterNotes[0].dailyNorm;
+
+  const groupedNotes = waterNotes.reduce((acc, note) => {
+    const noteDate = new Date(note.date).toLocaleDateString('sv-SE', {
+      timeZone: 'Europe/Kyiv',
     });
 
-    if (waterNotes.length === 0) {
-        return [];
+    if (!acc[noteDate]) {
+      acc[noteDate] = { totalAmount: 0, consumptionCount: 0 };
     }
 
-    const dailyNorm = waterNotes[0].dailyNorm;
+    acc[noteDate].totalAmount += note.amount;
+    acc[noteDate].consumptionCount += 1;
 
-    const groupedNotes = waterNotes.reduce((acc, note) => {
-        const noteDate = new Date(note.date).toLocaleDateString("sv-SE", { timeZone: "Europe/Kyiv" });
-        
-        if (!acc[noteDate]) {
-            acc[noteDate] = { totalAmount: 0, consumptionCount: 0 };
-        }
+    return acc;
+  }, {});
 
-        acc[noteDate].totalAmount += note.amount;
-        acc[noteDate].consumptionCount += 1;
+  const monthlyData = Object.keys(groupedNotes).map((noteDate) => {
+    const { totalAmount, consumptionCount } = groupedNotes[noteDate];
+    const percentage = Math.min(
+      ((totalAmount / dailyNorm) * 100).toFixed(2),
+      100,
+    ).toString();
 
-        return acc;
-    }, {});
+    const noteDateObj = new Date(noteDate);
+    const day = noteDateObj.getDate();
+    const month = noteDateObj.toLocaleString('en-US', { month: 'long' });
+    const formattedDate = `${day}, ${month}`;
 
-    const monthlyData = Object.keys(groupedNotes).map(noteDate => {
-        const { totalAmount, consumptionCount } = groupedNotes[noteDate];
-        const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
-        
+    return {
+      date: formattedDate,
+      dailyNorm: `${dailyNorm}`,
+      percentage: `${percentage}`,
+      consumptionCount: consumptionCount,
+    };
+  });
 
-        const noteDateObj = new Date(noteDate);
-        const day = noteDateObj.getDate(); 
-        const month = noteDateObj.toLocaleString('en-US', { month: 'long' });
-        const formattedDate = `${day}, ${month}`;
-
-        return {
-            date: formattedDate,
-            dailyNorm: `${dailyNorm}`,
-            percentage: `${percentage}`,
-            consumptionCount: consumptionCount,
-        };
-    });
-
-    return monthlyData;
+  return monthlyData;
 };
