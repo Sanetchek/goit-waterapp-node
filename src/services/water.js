@@ -78,36 +78,6 @@ export const updateWaterNoteService = async (
   userId,
   date,
 ) => {
-  const formattedDate = date
-    ? new Date(date)
-        .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
-        .replace(' ', 'T')
-        .slice(0, 16)
-    : new Date()
-        .toLocaleString('sv-SE', { timeZone: 'Europe/Kyiv' })
-        .replace(' ', 'T')
-        .slice(0, 16);
-
-  /*  const waterNote = await WaterCollection.findOne({
-    owner: userId,
-    date: formattedDate,
-  });
-
-  if (waterNote) {
-    waterNote.amount += amount;
-    await waterNote.save();
-    console.log(waterNote);
-
-    return waterNote;
-  } else {
-    const newWaterNote = await WaterCollection.create({
-      owner: userId,
-      amount,
-      date: formattedDate,
-    });
-    return newWaterNote;
-  } */
-
   const waterNote = await WaterCollection.findOne({
     _id: waterNoteId,
     owner: userId,
@@ -120,7 +90,7 @@ export const updateWaterNoteService = async (
     waterNoteId,
     {
       amount: amount,
-      date: formattedDate,
+      date: date,
     },
     {
       new: true,
