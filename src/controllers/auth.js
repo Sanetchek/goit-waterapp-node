@@ -6,12 +6,14 @@ const setupSession = (res, session) => {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
     sameSite: 'None',
+    secure: false,
   });
 
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
     sameSite: 'None',
+    secure: false,
   });
 };
 
