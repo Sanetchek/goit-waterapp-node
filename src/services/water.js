@@ -110,6 +110,9 @@ export const getTodayWaterConsumptionService = async (userId) => {
     timeZone: 'Europe/Kyiv',
   });
 
+  const user = await UserCollection.findById(userId);
+  if (!user) throw createHttpError(401, 'User not found');
+
   const waterNotes = await WaterCollection.find({
     owner: userId,
     date: { $regex: `^${currentDate}` },
@@ -117,7 +120,7 @@ export const getTodayWaterConsumptionService = async (userId) => {
 
   const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
 
-  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
+  const dailyNorm = user.dailyNormWater;
 
   return {
     totalAmount,
