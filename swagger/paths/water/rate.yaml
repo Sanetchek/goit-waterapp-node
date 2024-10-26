@@ -38,7 +38,44 @@ responses:
               example: 'Daily water norm updated successfully'
             data:
               type: object
-              $ref: ../../components/schemas/water.yaml
+              properties:
+                themeColor:
+                  type: string
+                  example: 'light'
+                _id:
+                  type: string
+                  example: '6718bd20fe54c6dcfd1251c7'
+                name:
+                  type: string
+                  example: 'vinisius'
+                email:
+                  type: string
+                  example: 'user-name15@domain.org'
+                gender:
+                  type: string
+                  example: 'woman'
+                weight:
+                  type: integer
+                  example: 0
+                sportTime:
+                  type: integer
+                  example: 0
+                dailyNormWater:
+                  type: integer
+                  example: 1800
+                avatar:
+                  description: "User's avatar image file."
+                  type: string
+                  format: binary
+                  example: 'avatar.jpg'
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2024-10-23T09:08:48.932Z'
+                updatedAt:
+                  type: string
+                  format: date-time
+                  example: '2024-10-26T20:29:35.561Z'
   '401':
     $ref: '../../components/responses/401.yaml'
   '500':
