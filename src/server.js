@@ -17,7 +17,12 @@ const setupServer = () => {
   const app = express();
 
   //app.use(logger);  в кінці розкоментувати
-  app.use(cors());
+  const corsOptions = {
+    origin: ['http://localhost:3000', 'https://goit-waterapp-front.vercel.app/'],
+    credentials: true,
+  };
+
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(cookieParser());
   app.use(express.static('uploads'));
