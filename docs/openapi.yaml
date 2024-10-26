@@ -52,10 +52,10 @@ paths:
       $ref: '../swagger/paths/water/{id}/patchWaterNoteId.yaml'
     delete:
       $ref: '../swagger/paths/water/{id}/deleteWaterNoteId.yaml'
-  /water/getWaterPerDay/{date}:
+  /water/today/{date}:
     get:
       $ref: '../swagger/paths/water/{date}/today.yaml'
-  /water/getWaterPerMonth/{date}:
+  /water/month/{date}:
     get:
       $ref: '../swagger/paths/water/{date}/month.yaml'
 components:

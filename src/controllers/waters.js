@@ -8,21 +8,14 @@ import {
 } from '../services/water.js';
 
 export const updateWaterRate = async (req, res) => {
-  const { dailyNorm } = req.body;
+  const { dailyNormWater } = req.body;
   const userId = req.user._id;
 
-  const result = await updateWaterRateService(userId, dailyNorm);
-
-  if (result.message === 'created') {
-    return res.status(201).json({
-      message: 'Daily water norm created successfully',
-      data: result.data,
-    });
-  }
+  const waterRate = await updateWaterRateService(userId, dailyNormWater);
 
   return res.status(200).json({
     message: 'Daily water norm updated successfully',
-    data: result.data,
+    data: waterRate.data,
   });
 };
 
