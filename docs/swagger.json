@@ -935,7 +935,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "waterVolume": {
+                  "amount": {
                     "description": "Amount of water consumed, in milliliters.",
                     "type": "number",
                     "example": 400
@@ -953,7 +953,7 @@
                   }
                 },
                 "required": [
-                  "waterVolume"
+                  "amount"
                 ]
               }
             }
@@ -1033,7 +1033,7 @@
                     "type": "number",
                     "example": 1000
                   },
-                  "waterVolume": {
+                  "amount": {
                     "description": "Amount of water consumed, in milliliters.",
                     "type": "number",
                     "example": 400
@@ -1132,7 +1132,7 @@
           "Water"
         ],
         "summary": "Get water per day",
-        "operationId": "getWaterPerDay",
+        "operationId": "today",
         "description": "Retrieve water for a specific day. This endpoint requires the user to be logged in.",
         "security": [
           {
@@ -1235,7 +1235,7 @@
           "Water"
         ],
         "summary": "Get water per month",
-        "operationId": "getWaterPerMonth",
+        "operationId": "month",
         "description": "Retrieve water for a specific month. This endpoint requires the user to be logged in.",
         "security": [
           {

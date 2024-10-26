@@ -12,7 +12,7 @@ requestBody:
       schema:
         type: object
         properties:
-          waterVolume:
+          amount:
             description: Amount of water consumed, in milliliters.
             type: number
             example: 400
@@ -26,7 +26,7 @@ requestBody:
             format: date-time
             example: '2024-09-17T12:00:00Z'
         required:
-          - waterVolume
+          - amount
 responses:
   '201':
     description: 'Water consumption note added successfully'

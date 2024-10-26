@@ -22,7 +22,7 @@ requestBody:
             description: 'daily rate of water in milliliters.'
             type: number
             example: 1000
-          waterVolume:
+          amount:
             description: 'Amount of water consumed, in milliliters.'
             type: number
             example: 400
