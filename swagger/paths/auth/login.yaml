@@ -50,6 +50,35 @@ responses:
               required:
                 - accessToken
               properties:
+                themeColor:
+                  type: string
+                  example: 'light'
+                id:
+                  type: string
+                  example: '6718bd20fe54c6dcfd1251c7'
+                name:
+                  type: string
+                  example: 'vinisius'
+                email:
+                  type: string
+                  example: 'user-name15@domain.org'
+                gender:
+                  type: string
+                  example: 'woman'
+                weight:
+                  type: integer
+                  example: 0
+                sportTime:
+                  type: integer
+                  example: 0
+                dailyNormWater:
+                  type: integer
+                  example: 1200
+                avatar:
+                  description: "User's avatar image file."
+                  type: string
+                  format: binary
+                  example: 'avatar.jpg'
                 accessToken:
                   type: string
                   example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKQ66B8w87W5Y1Pfe0xgX1MP8'
