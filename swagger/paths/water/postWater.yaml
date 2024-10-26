@@ -12,7 +12,7 @@ requestBody:
       schema:
         type: object
         properties:
-          waterVolume:
+          amount:
             description: Amount of water consumed, in milliliters.
             type: number
             example: 400
