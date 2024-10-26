@@ -11,7 +11,8 @@ import {
 
 import authenticate from '../middlewares/authenticate.js';
 
-import { waterRateSchema, waterNotesSchema } from '../validation/waters.js';
+import { waterNotesSchema } from '../validation/waters.js';
+import { userWaterSchema } from '../validation/auth.js';
 
 import controllerWrapper from '../utils/controllerWrapper.js';
 import validateBody from '../utils/validateBody.js';
@@ -21,7 +22,7 @@ const waterRouter = express.Router();
 waterRouter.patch(
   '/rate',
   authenticate,
-  validateBody(waterRateSchema),
+  validateBody(userWaterSchema),
   controllerWrapper(updateWaterRate),
 );
 
