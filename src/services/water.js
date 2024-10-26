@@ -157,8 +157,6 @@ export const getMonthlyWaterConsumptionService = async (
     date: { $gte: startDate, $lt: endDate },
   });
 
-  console.log(waterNotes);
-
   if (waterNotes.length === 0) {
     return [];
   }
