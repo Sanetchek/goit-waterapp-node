@@ -1,7 +1,7 @@
 tags:
   - Water
 summary: Get water per month
-operationId: getWaterPerMonth
+operationId: month
 description: 'Retrieve water for a specific month. This endpoint requires the user to be logged in.'
 security:
   - bearerAuth: []

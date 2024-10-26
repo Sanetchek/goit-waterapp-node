@@ -1,7 +1,7 @@
 tags:
   - Water
 summary: Get water per day
-operationId: getWaterPerDay
+operationId: today
 description: 'Retrieve water for a specific day. This endpoint requires the user to be logged in.'
 security:
   - bearerAuth: []
