@@ -48,8 +48,6 @@ export const refreshController = async (req, res) => {
     sessionId,
   });
 
-  console.log(data);
-
   setupSession(res, data.session);
 
   res.json({
