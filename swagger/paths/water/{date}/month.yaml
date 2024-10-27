@@ -34,7 +34,20 @@ responses:
             data:
               type: array
               items:
-                $ref: '../../../components/schemas/water.yaml'
+                type: object
+                properties:
+                  date:
+                    type: string
+                    example: '1, October'
+                  dailyNorm:
+                    type: integer
+                    example: 3000
+                  percentage:
+                    type: string
+                    example: '0'
+                  consumptionCount:
+                    type: integer
+                    example: 0
   '400':
     description: 'Bad request error. Returns status code and error information.'
     content:
