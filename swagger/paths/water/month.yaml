@@ -5,14 +5,22 @@ operationId: month
 description: 'Retrieve water for a specific month. This endpoint requires the user to be logged in.'
 security:
   - bearerAuth: []
-parameters:
-  - in: path
-    name: date
-    required: true
-    schema:
-      type: string
-      description: 'Date in ISO 8601 format (YYYY-MM).'
-      example: '2024-09'
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - year
+          - month
+        properties:
+          year:
+            type: integer
+            example: 2024
+          month:
+            type: integer
+            example: 10
 responses:
   '200':
     description: 'Successfully retrieved water records for a specific month. Returns a status code, a success message and the records details.'
@@ -80,6 +88,6 @@ responses:
                   type: string
                   example: 'Invalid date format'
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: '../../components/responses/401.yaml'
   '500':
-    $ref: '../../../components/responses/500.yaml'
+    $ref: '../../components/responses/500.yaml'

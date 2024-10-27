@@ -5,14 +5,6 @@ operationId: today
 description: 'Retrieve water for a specific day. This endpoint requires the user to be logged in.'
 security:
   - bearerAuth: []
-parameters:
-  - in: path
-    name: date
-    required: false
-    schema:
-      type: string
-      description: 'Date in ISO 8601 format (YYYY-MM-DD).'
-      example: '2024-09-20'
 responses:
   '200':
     description: 'Successfully retrieved water records for a specific day. Returns a status code, a success message and the records details.'
@@ -90,6 +82,6 @@ responses:
                   type: string
                   example: 'Invalid date format'
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: '../../components/responses/401.yaml'
   '500':
-    $ref: '../../../components/responses/500.yaml'
+    $ref: '../../components/responses/500.yaml'
