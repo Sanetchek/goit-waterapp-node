@@ -52,12 +52,12 @@ paths:
       $ref: '../swagger/paths/water/{id}/patchWaterNoteId.yaml'
     delete:
       $ref: '../swagger/paths/water/{id}/deleteWaterNoteId.yaml'
-  /water/today/{date}:
+  /water/today:
     get:
-      $ref: '../swagger/paths/water/{date}/today.yaml'
-  /water/month/{date}:
+      $ref: '../swagger/paths/water/today.yaml'
+  /water/month/:year/:month:
     get:
-      $ref: '../swagger/paths/water/{date}/month.yaml'
+      $ref: '../swagger/paths/water/month.yaml'
 components:
   securitySchemes:
     bearerAuth:

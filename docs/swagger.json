@@ -1213,7 +1213,7 @@
         }
       }
     },
-    "/water/today/{date}": {
+    "/water/today": {
       "get": {
         "tags": [
           "Water"
@@ -1224,18 +1224,6 @@
         "security": [
           {
             "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "date",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "Date in ISO 8601 format (YYYY-MM-DD).",
-              "example": "2024-09-20"
-            }
           }
         ],
         "responses": {
@@ -1356,7 +1344,7 @@
         }
       }
     },
-    "/water/month/{date}": {
+    "/water/month/:year/:month": {
       "get": {
         "tags": [
           "Water"
@@ -1369,18 +1357,30 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "date",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "Date in ISO 8601 format (YYYY-MM).",
-              "example": "2024-09"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "year",
+                  "month"
+                ],
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "example": 2024
+                  },
+                  "month": {
+                    "type": "integer",
+                    "example": 10
+                  }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Successfully retrieved water records for a specific month. Returns a status code, a success message and the records details.",
