@@ -36,12 +36,18 @@ responses:
               items:
                 type: object
                 properties:
+                  key:
+                    type: string
+                    example: '671bb6983b2b0f54b892ced0-2024-10-01'
                   date:
                     type: string
                     example: '1, October'
-                  dailyNorm:
+                  day:
                     type: integer
-                    example: 3000
+                    example: 1
+                  dailyNorm:
+                    type: string
+                    example: '3000'
                   percentage:
                     type: string
                     example: '0'

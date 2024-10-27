@@ -202,6 +202,44 @@
                         "accessToken"
                       ],
                       "properties": {
+                        "themeColor": {
+                          "type": "string",
+                          "example": "light"
+                        },
+                        "id": {
+                          "type": "string",
+                          "example": "6718bd20fe54c6dcfd1251c7"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "vinisius"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user-name15@domain.org"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "example": "woman"
+                        },
+                        "weight": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "sportTime": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "dailyNormWater": {
+                          "type": "integer",
+                          "example": 1200
+                        },
+                        "avatar": {
+                          "description": "User's avatar image file.",
+                          "type": "string",
+                          "format": "binary",
+                          "example": "avatar.jpg"
+                        },
                         "accessToken": {
                           "type": "string",
                           "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKQ66B8w87W5Y1Pfe0xgX1MP8",
@@ -899,7 +937,56 @@
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/water"
+                      "properties": {
+                        "themeColor": {
+                          "type": "string",
+                          "example": "light"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "example": "6718bd20fe54c6dcfd1251c7"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "vinisius"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user-name15@domain.org"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "example": "woman"
+                        },
+                        "weight": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "sportTime": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "dailyNormWater": {
+                          "type": "integer",
+                          "example": 1800
+                        },
+                        "avatar": {
+                          "description": "User's avatar image file.",
+                          "type": "string",
+                          "format": "binary",
+                          "example": "avatar.jpg"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-10-23T09:08:48.932Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-10-26T20:29:35.561Z"
+                        }
+                      }
                     }
                   }
                 }
@@ -1173,9 +1260,49 @@
                       "example": "Successfully found water records!"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/water"
+                      "type": "object",
+                      "properties": {
+                        "percentage": {
+                          "type": "string",
+                          "example": "37.50"
+                        },
+                        "totalAmount": {
+                          "type": "integer",
+                          "example": 600
+                        },
+                        "dailyNorm": {
+                          "type": "integer",
+                          "example": 1600
+                        },
+                        "notes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string",
+                                "example": "671d64b45d8e6651291258c0"
+                              },
+                              "amount": {
+                                "type": "integer",
+                                "example": 200
+                              },
+                              "dailyNorm": {
+                                "type": "integer",
+                                "example": 1600
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2024-10-27T00:32"
+                              },
+                              "owner": {
+                                "type": "string",
+                                "example": "6718bd20fe54c6dcfd1251c7"
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -1278,7 +1405,33 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/water"
+                        "type": "object",
+                        "properties": {
+                          "key": {
+                            "type": "string",
+                            "example": "671bb6983b2b0f54b892ced0-2024-10-01"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "1, October"
+                          },
+                          "day": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "dailyNorm": {
+                            "type": "string",
+                            "example": "3000"
+                          },
+                          "percentage": {
+                            "type": "string",
+                            "example": "0"
+                          },
+                          "consumptionCount": {
+                            "type": "integer",
+                            "example": 0
+                          }
+                        }
                       }
                     }
                   }
