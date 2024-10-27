@@ -130,17 +130,10 @@ export const getTodayWaterConsumptionService = async (userId) => {
   };
 };
 
-export const getMonthlyWaterConsumptionService = async (
-  userId,
-  year,
-  month,
-) => {
+export const getMonthlyWaterConsumptionService = async (userId, year, month) => {
   // Set start and end dates for the specified month
   const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
   const endDate = new Date(year, month, 1).toISOString().split('T')[0];
-
-  // Calculate total number of days in the month
-  const daysInMonth = new Date(year, month, 0).getDate();
 
   // Query the database for the user's water consumption notes within the month
   const waterNotes = await WaterCollection.find({
@@ -151,22 +144,13 @@ export const getMonthlyWaterConsumptionService = async (
     },
   });
 
-  // Return an empty array if there are no records for the month
-  if (waterNotes.length === 0) {
-    return {
-      daysInMonth,
-      monthlyData: []
-    };
-  }
-
-  // Assume all notes have the same dailyNorm for the month
-  const dailyNorm = waterNotes[0].dailyNorm;
+  // Assume all notes have the same dailyNorm for the month if there are records
+  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
 
   // Group water notes by day
   const groupedNotes = waterNotes.reduce((acc, note) => {
-    const noteDate = note.date.split('T')[0]; // Use ISO date format directly
+    const noteDate = note.date.split('T')[0];
 
-    // Initialize the date entry if it doesn't exist
     if (!acc[noteDate]) {
       acc[noteDate] = {
         totalAmount: 0,
@@ -174,46 +158,54 @@ export const getMonthlyWaterConsumptionService = async (
       };
     }
 
-    // Accumulate total amount and increment count for the date
     acc[noteDate].totalAmount += note.amount;
     acc[noteDate].consumptionCount += 1;
 
     return acc;
   }, {});
 
-  // Create an array of formatted data for each day of the month
-  const monthlyData = Object.keys(groupedNotes).map((noteDate) => {
-    const {
-      totalAmount,
-      consumptionCount
-    } = groupedNotes[noteDate];
-
-    // Calculate consumption percentage, limited to 100%
-    const percentage = Math.min(
-      ((totalAmount / dailyNorm) * 100).toFixed(2),
-      100,
-    ).toString();
-
-    // Format the date as "day, month"
-    const noteDateObj = new Date(noteDate);
-    const day = noteDateObj.getDate();
-    const monthName = noteDateObj.toLocaleString('en-US', {
+  // Create an array of all days in the month, including empty fields for days with no data
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const monthlyData = Array.from({
+    length: daysInMonth
+  }, (_, index) => {
+    const day = index + 1; // This gives the correct day (1 to daysInMonth)
+    const date = new Date(year, month - 1, day); // Correctly create the date
+    const dateString = date.toISOString().split('T')[0]; // Get the ISO date string
+    const monthName = date.toLocaleString('en-US', {
       month: 'long'
-    });
-    const formattedDate = `${day}, ${monthName}`;
+    }); // Get the month name
 
-    return {
-      date: formattedDate,
-      day,
-      month: monthName,
-      dailyNorm: `${dailyNorm}`,
-      percentage: `${percentage}`,
-      consumptionCount: consumptionCount,
-    };
+    // Construct the unique key with the correct day of the month formatted as 'YYYY-MM-DD'
+    const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // Add zero-padding to day
+
+    if (groupedNotes[dateString]) {
+      const {
+        totalAmount,
+        consumptionCount
+      } = groupedNotes[dateString];
+      const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
+
+      return {
+        key: uniqueKey, // Add unique key
+        date: `${day}, ${monthName}`, // This correctly reflects the current day
+        day,
+        dailyNorm: `${dailyNorm}`,
+        percentage,
+        consumptionCount,
+      };
+    } else {
+      // Return null or default values for days with no data
+      return {
+        key: uniqueKey, // Add unique key
+        date: `${day}, ${monthName}`, // This correctly reflects the current day
+        day,
+        dailyNorm: `${dailyNorm}`,
+        percentage: '0',
+        consumptionCount: 0,
+      };
+    }
   });
 
-  return {
-    daysInMonth,
-    monthlyData
-  };
+  return monthlyData;
 };
