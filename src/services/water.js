@@ -110,18 +110,22 @@ export const getTodayWaterConsumptionService = async (userId) => {
     timeZone: 'Europe/Kyiv',
   });
 
+  // Change this line to use the correct collection name
+  const user = await UsersCollection.findById(userId); // Use UsersCollection here
+  if (!user) throw createHttpError(401, 'User not found');
+
   const waterNotes = await WaterCollection.find({
     owner: userId,
-    date: { $regex: `^${currentDate}` },
+    date: {
+      $regex: `^${currentDate}`
+    },
   });
 
   const totalAmount = waterNotes.reduce((sum, note) => sum + note.amount, 0);
 
-  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
-
   return {
     totalAmount,
-    dailyNorm,
+    dailyNorm: user.dailyNormWater,
     notes: waterNotes,
   };
 };
@@ -131,58 +135,85 @@ export const getMonthlyWaterConsumptionService = async (
   year,
   month,
 ) => {
-  const startDate = new Date(year, month - 1, 1).toLocaleDateString('sv-SE', {
-    timeZone: 'Europe/Kyiv',
-  });
-  const endDate = new Date(year, month, 1).toLocaleDateString('sv-SE', {
-    timeZone: 'Europe/Kyiv',
-  });
+  // Set start and end dates for the specified month
+  const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
+  const endDate = new Date(year, month, 1).toISOString().split('T')[0];
 
+  // Calculate total number of days in the month
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // Query the database for the user's water consumption notes within the month
   const waterNotes = await WaterCollection.find({
     owner: userId,
-    date: { $gte: startDate, $lt: endDate },
+    date: {
+      $gte: startDate,
+      $lt: endDate,
+    },
   });
 
+  // Return an empty array if there are no records for the month
   if (waterNotes.length === 0) {
-    return [];
+    return {
+      daysInMonth,
+      monthlyData: []
+    };
   }
 
+  // Assume all notes have the same dailyNorm for the month
   const dailyNorm = waterNotes[0].dailyNorm;
 
+  // Group water notes by day
   const groupedNotes = waterNotes.reduce((acc, note) => {
-    const noteDate = new Date(note.date).toLocaleDateString('sv-SE', {
-      timeZone: 'Europe/Kyiv',
-    });
+    const noteDate = note.date.split('T')[0]; // Use ISO date format directly
 
+    // Initialize the date entry if it doesn't exist
     if (!acc[noteDate]) {
-      acc[noteDate] = { totalAmount: 0, consumptionCount: 0 };
+      acc[noteDate] = {
+        totalAmount: 0,
+        consumptionCount: 0,
+      };
     }
 
+    // Accumulate total amount and increment count for the date
     acc[noteDate].totalAmount += note.amount;
     acc[noteDate].consumptionCount += 1;
 
     return acc;
   }, {});
 
+  // Create an array of formatted data for each day of the month
   const monthlyData = Object.keys(groupedNotes).map((noteDate) => {
-    const { totalAmount, consumptionCount } = groupedNotes[noteDate];
+    const {
+      totalAmount,
+      consumptionCount
+    } = groupedNotes[noteDate];
+
+    // Calculate consumption percentage, limited to 100%
     const percentage = Math.min(
       ((totalAmount / dailyNorm) * 100).toFixed(2),
       100,
     ).toString();
 
+    // Format the date as "day, month"
     const noteDateObj = new Date(noteDate);
     const day = noteDateObj.getDate();
-    const month = noteDateObj.toLocaleString('en-US', { month: 'long' });
-    const formattedDate = `${day}, ${month}`;
+    const monthName = noteDateObj.toLocaleString('en-US', {
+      month: 'long'
+    });
+    const formattedDate = `${day}, ${monthName}`;
 
     return {
       date: formattedDate,
+      day,
+      month: monthName,
       dailyNorm: `${dailyNorm}`,
       percentage: `${percentage}`,
       consumptionCount: consumptionCount,
     };
   });
 
-  return monthlyData;
+  return {
+    daysInMonth,
+    monthlyData
+  };
 };
