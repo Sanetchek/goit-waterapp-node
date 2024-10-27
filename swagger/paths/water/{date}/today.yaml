@@ -32,9 +32,38 @@ responses:
               type: string
               example: 'Successfully found water records!'
             data:
-              type: array
-              items:
-                $ref: '../../../components/schemas/water.yaml'
+              type: object
+              properties:
+                percentage:
+                  type: string
+                  example: '37.50'
+                totalAmount:
+                  type: integer
+                  example: 600
+                dailyNorm:
+                  type: integer
+                  example: 1600
+                notes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: '671d64b45d8e6651291258c0'
+                      amount:
+                        type: integer
+                        example: 200
+                      dailyNorm:
+                        type: integer
+                        example: 1600
+                      date:
+                        type: string
+                        format: date-time
+                        example: '2024-10-27T00:32'
+                      owner:
+                        type: string
+                        example: '6718bd20fe54c6dcfd1251c7'
   '400':
     description: 'Bad request error. Returns status code and error information.'
     content:
