@@ -1,8 +1,10 @@
 import createHttpError from 'http-errors';
+import bcrypt from 'bcrypt';
 import * as UserServices from '../services/userServices.js';
 import saveFileToUploadDir from '../utils/saveFileToUploadDir.js';
 import saveFileToCloudinary from '../utils/saveFileToCloudinary.js';
 import { env } from '../utils/env.js';
+import UserCollection from '../db/models/Users.js';
 
 const enableCloudinary = env('ENABLE_CLOUDINARY');
 
@@ -23,11 +25,29 @@ export const getUserByIdController = async (req, res) => {
 
 export const upsertUserController = async (req, res) => {
   const { id } = req.params;
+  const { oldPassword, password, ...otherData } = req.body;
+
+  if (password) {
+    const user = await UserCollection.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: 'Incorrect old password' });
+    }
+
+    // Хешуємо новий пароль і додаємо до `otherData`
+    otherData.password = await bcrypt.hash(password, 10);
+  }
+
   const { isNew, data } = await UserServices.updateUsers(
     { _id: id },
     req.body,
     { upsert: true },
   );
+
   const status = isNew ? 201 : 200;
 
   res.status(status).json({

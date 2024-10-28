@@ -11,7 +11,6 @@ export const updateUsers = async (filter, data, options) => {
     includeResultMetadata: true,
     ...options,
   });
-
   if (!rawResult || !rawResult.value) return null;
 
   return {
