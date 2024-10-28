@@ -31,39 +31,51 @@ export const upsertUserController = async (req, res) => {
   const status = isNew ? 201 : 200;
 
   res.status(status).json({
-    status: 200,
-    message: 'Successfully patched a contact!',
+    status: status, // Ensure the status here reflects the operation
+    message: 'Successfully patched a user!', // Change 'contact' to 'user'
     data,
   });
 };
 
 export const patchUserController = async (req, res) => {
-  const { _id: id } = req.user;
+  const {
+    _id: id
+  } = req.user;
   const avatar = req.file;
 
   let photoUrl;
 
   if (avatar) {
+    console.log('Uploaded Avatar:', avatar); // Debugging line
+
     if (enableCloudinary === 'true') {
       photoUrl = await saveFileToCloudinary(avatar);
+      console.log('Photo URL from Cloudinary:', photoUrl); // Debugging line
     } else {
       photoUrl = await saveFileToUploadDir(avatar);
+      console.log('Photo URL from local:', photoUrl); // Debugging line
     }
   }
 
   const updatedData = {
     ...req.body,
-    ...(photoUrl && { avatar: photoUrl }),
+    ...(photoUrl && {
+      avatar: photoUrl
+    }),
   };
 
+  console.log('Updated Data:', updatedData); // Debugging line
+
   const result = await UserServices.updateContact(id, updatedData);
+
   if (!result) {
-    throw createHttpError(404, `Contact with id=${id} not found`);
+    throw createHttpError(404, `User with id=${id} not found`);
   }
 
+  console.log('result:', result); // Debugging line
   res.json({
     status: 200,
-    message: 'Successfully patched the contact!',
+    message: 'Successfully patched the user!',
     data: result,
   });
 };
