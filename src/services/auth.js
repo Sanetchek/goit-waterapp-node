@@ -64,9 +64,11 @@ export const register = async ({ email, password, ...rest }) => {
 
 export const login = async ({ email, password }) => {
   const user = await UserCollection.findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  const check_password = await bcrypt.compare(password, user.password);
+  if (!user || !check_password) {
     throw createHttpError(401, 'Email or password invalid');
   }
+
 
   await SessionCollection.deleteOne({ userId: user._id });
   const sessionData = createSession();
