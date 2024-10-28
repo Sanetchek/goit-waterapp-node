@@ -25,9 +25,9 @@ export const getUserByIdController = async (req, res) => {
 
 export const upsertUserController = async (req, res) => {
   const { id } = req.params;
-  const { oldPassword, newPassword, ...otherData } = req.body;
+  const { oldPassword, password, ...otherData } = req.body;
 
-  if (newPassword) {
+  if (password) {
     const user = await UserCollection.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -39,7 +39,7 @@ export const upsertUserController = async (req, res) => {
     }
 
     // Хешуємо новий пароль і додаємо до `otherData`
-    otherData.password = await bcrypt.hash(newPassword, 10);
+    otherData.password = await bcrypt.hash(password, 10);
   }
 
   const { isNew, data } = await UserServices.updateUsers(
@@ -47,8 +47,6 @@ export const upsertUserController = async (req, res) => {
     req.body,
     { upsert: true },
   );
-
-  console.log(data);
 
   const status = isNew ? 201 : 200;
 
