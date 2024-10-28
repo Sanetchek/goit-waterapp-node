@@ -66,7 +66,6 @@ export const login = async ({ email, password }) => {
     throw createHttpError(401, 'Email or password invalid');
   }
 
-
   await SessionCollection.deleteOne({ userId: user._id });
   const sessionData = createSession();
   const userSession = await SessionCollection.create({
