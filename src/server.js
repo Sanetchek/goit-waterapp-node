@@ -6,9 +6,11 @@ import authRouter from './routers/auth.js';
 import userRouter from './routers/user.js';
 import waterRouter from './routers/water.js';
 
-/* import logger from './middlewares/logger.js';*/
-import swaggerDocs from'./middlewares/swaggerDocs.js';
-import { env } from './utils/env.js';
+import logger from './middlewares/logger.js';
+import swaggerDocs from './middlewares/swaggerDocs.js';
+import {
+  env
+} from './utils/env.js';
 
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -16,9 +18,9 @@ import errorHandler from './middlewares/errorHandler.js';
 const setupServer = () => {
   const app = express();
 
-  //app.use(logger);  в кінці розкоментувати
+  app.use(logger);
   const corsOptions = {
-    origin: ['http://localhost:3000', 'https://goit-waterapp-front.vercel.app/'],
+    origin: ['http://localhost:3000', 'https://goit-waterapp-front.vercel.app'], // Removed trailing slash
     credentials: true,
   };
 
