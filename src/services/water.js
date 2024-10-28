@@ -170,6 +170,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
     length: daysInMonth
   }, (_, index) => {
     const day = index + 1; // This gives the correct day (1 to daysInMonth)
+    const todayDay = new Date().getDate();
     const date = new Date(year, month - 1, day); // Correctly create the date
     const dateString = date.toISOString().split('T')[0]; // Get the ISO date string
     const monthName = date.toLocaleString('en-US', {
@@ -179,7 +180,17 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
     // Construct the unique key with the correct day of the month formatted as 'YYYY-MM-DD'
     const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // Add zero-padding to day
 
-    if (groupedNotes[dateString]) {
+    if (todayDay === day) {
+      // Return null or default values for days with no data
+      return {
+        key: uniqueKey, // Add unique key
+        date: `${day}, ${monthName}`, // This correctly reflects the current day
+        day,
+        dailyNorm: `${dailyNorm}`,
+        percentage: '0',
+        consumptionCount: 0,
+      };
+    } else if (groupedNotes[dateString]) {
       const {
         totalAmount,
         consumptionCount
