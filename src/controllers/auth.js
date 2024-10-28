@@ -80,6 +80,8 @@ export const sendResetEmailController = async (req, res) => {
 };
 
 export const resetPasswordController = async (req, res) => {
+  console.log(req.body);
+
   await resetPassword(req.body);
   res.json({
     status: 200,
