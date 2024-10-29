@@ -139,23 +139,29 @@ export const requestResetToken = async (email) => {
 };
 
 export const resetPassword = async ({ token, password }) => {
-  let payload;
-  try {
-    payload = jwt.verify(token, env('JWT_SECRET'));
-    console.log(payload);
-  } catch (error) {
-    throw createHttpError(401, error.message);
-  }
+  const payload = jwt.verify(token, env('JWT_SECRET'));
 
   const user = await UserCollection.findOne({
     email: payload.email,
     _id: payload.sub,
   });
-  if (!user) throw createHttpError(404, 'User not found');
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
 
   const hashedPassword = await generateHash(password);
+
   await UserCollection.updateOne(
     { _id: user._id },
-    { password: hashedPassword },
+    { password: hashedPassword }
   );
+
+  // Fetch the updated user without the password field
+  const updatedUser = await UserCollection.findOne(
+    { _id: user._id },
+    { projection: { password: 0 } }
+  );
+
+  return updatedUser;
 };
