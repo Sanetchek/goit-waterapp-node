@@ -50,6 +50,14 @@ requestBody:
             type: string
             format: binary
             example: 'avatar.jpg'
+          oldPassword:
+            description: "The user's current password, required for password reset."
+            type: string
+            example: 'qwerty123'
+          password:
+            description: "The user's new password, to be set after confirmation of the old password."
+            type: string
+            example: 'qwerty555'
 responses:
   '200':
     description: 'User successfully patched. Returns a status code, a success message and user information.'
