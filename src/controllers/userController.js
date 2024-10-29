@@ -34,19 +34,25 @@ export const upsertUserController = async (req, res) => {
     }
 
     const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+
+    console.log('Старий пароль правильний:', isPasswordCorrect);
+
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: 'Incorrect old password' });
     }
 
     // Хешуємо новий пароль і додаємо до `otherData`
     otherData.password = await bcrypt.hash(password, 10);
+    console.log(otherData);
   }
 
   const { isNew, data } = await UserServices.updateUsers(
     { _id: id },
-    req.body,
+    otherData,
     { upsert: true },
   );
+
+  console.log('data', data);
 
   const status = isNew ? 201 : 200;
 
