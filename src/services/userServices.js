@@ -1,8 +1,18 @@
 import UserCollection from '../db/models/Users.js';
 
+const sanitizeUser = (user) => {
+  const cleanUser = {
+    ...user._doc
+  };
+  delete cleanUser.password;
+  delete cleanUser.createdAt;
+  delete cleanUser.updatedAt;
+  return cleanUser;
+};
+
 export const getUserById = async (id) => {
   const users = await UserCollection.findById(id);
-  return users;
+  return sanitizeUser(users);
 };
 
 export const updateUsers = async (filter, data, options) => {
