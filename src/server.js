@@ -18,7 +18,7 @@ import errorHandler from './middlewares/errorHandler.js';
 const setupServer = () => {
   const app = express();
 
-  app.use(logger);
+  // app.use(logger);
   const corsOptions = {
     origin: ['http://localhost:3000', 'https://goit-waterapp-front.vercel.app'], // Removed trailing slash
     credentials: true,

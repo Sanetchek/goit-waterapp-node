@@ -1,13 +1,9 @@
-import UsersCollection from '../db/models/Users.js';
+import UserCollection from '../db/models/Users.js';
 import WaterCollection from '../db/models/Waters.js';
 import createHttpError from 'http-errors';
 
-export const getUserWaterRate = (filter) => {
-  return UsersCollection.findOne(filter);
-};
-
 export const updateUserWaterRate = async (filter, data, options = {}) => {
-  const updatedUser = await UsersCollection.findOneAndUpdate(filter, data, {
+  const updatedUser = await UserCollection.findOneAndUpdate(filter, data, {
     includeResultMetadata: true,
     ...options,
   });
@@ -20,7 +16,7 @@ export const updateUserWaterRate = async (filter, data, options = {}) => {
 };
 
 export const updateWaterRateService = async (userId, dailyNormWater) => {
-  const updatedWater = await UsersCollection.findOneAndUpdate(
+  const updatedWater = await UserCollection.findOneAndUpdate(
     { _id: userId },
     {
       dailyNormWater,
@@ -111,7 +107,7 @@ export const getTodayWaterConsumptionService = async (userId) => {
   });
 
   // Change this line to use the correct collection name
-  const user = await UsersCollection.findById(userId); // Use UsersCollection here
+  const user = await UserCollection.findById(userId); // Use UserCollection here
   if (!user) throw createHttpError(401, 'User not found');
 
   const waterNotes = await WaterCollection.find({
@@ -131,9 +127,9 @@ export const getTodayWaterConsumptionService = async (userId) => {
 };
 
 export const getMonthlyWaterConsumptionService = async (userId, year, month) => {
-  // Set start and end dates for the specified month
-  const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
-  const endDate = new Date(year, month, 1).toISOString().split('T')[0];
+  // Set start and end dates for the specified month in 'YYYY-MM-DD' format
+  const startDate = new Date(year, month - 1, 1).toLocaleDateString('en-CA');
+  const endDate = new Date(year, month, 1).toLocaleDateString('en-CA');
 
   // Query the database for the user's water consumption notes within the month
   const waterNotes = await WaterCollection.find({
@@ -144,8 +140,10 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
     },
   });
 
+  const user = await UserCollection.findById(userId);
+
   // Assume all notes have the same dailyNorm for the month if there are records
-  const dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
+  let dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
 
   // Group water notes by day
   const groupedNotes = waterNotes.reduce((acc, note) => {
@@ -160,6 +158,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
 
     acc[noteDate].totalAmount += note.amount;
     acc[noteDate].consumptionCount += 1;
+    acc[noteDate].dailyNorm = note.dailyNorm;
 
     return acc;
   }, {});
@@ -169,34 +168,28 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
   const monthlyData = Array.from({
     length: daysInMonth
   }, (_, index) => {
+    const todaysDate = new Date();
+    const currentMonth = todaysDate.getMonth() + 1;
+    const todayDay = todaysDate.getDate();
     const day = index + 1; // This gives the correct day (1 to daysInMonth)
-    const todayDay = new Date().getDate();
-    const date = new Date(year, month - 1, day); // Correctly create the date
-    const dateString = date.toISOString().split('T')[0]; // Get the ISO date string
+    const date = new Date(year, month - 1, day);
+    const dateString = date.toLocaleDateString('en-CA'); // Format date to 'YYYY-MM-DD' in local timezone
     const monthName = date.toLocaleString('en-US', {
       month: 'long'
     }); // Get the month name
 
     // Construct the unique key with the correct day of the month formatted as 'YYYY-MM-DD'
-    const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // Add zero-padding to day
+    const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-    if (todayDay === day) {
-      // Return null or default values for days with no data
-      return {
-        key: uniqueKey, // Add unique key
-        date: `${day}, ${monthName}`, // This correctly reflects the current day
-        day,
-        dailyNorm: `${dailyNorm}`,
-        percentage: '0',
-        consumptionCount: 0,
-      };
-    } else if (groupedNotes[dateString]) {
+    if (Number(currentMonth) === Number(month) && todayDay === day) {
       const {
         totalAmount,
         consumptionCount
       } = groupedNotes[dateString];
+      dailyNorm = user.dailyNormWater;
       const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
 
+      // Return null or default values for days with no data
       return {
         key: uniqueKey, // Add unique key
         date: `${day}, ${monthName}`, // This correctly reflects the current day
@@ -205,13 +198,28 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
         percentage,
         consumptionCount,
       };
-    } else {
-      // Return null or default values for days with no data
+    } else if (groupedNotes[dateString]) {
+      const {
+        totalAmount,
+        consumptionCount,
+        dailyNorm
+      } = groupedNotes[dateString];
+      const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
+
       return {
-        key: uniqueKey, // Add unique key
-        date: `${day}, ${monthName}`, // This correctly reflects the current day
+        key: uniqueKey,
+        date: `${day}, ${monthName}`,
         day,
         dailyNorm: `${dailyNorm}`,
+        percentage,
+        consumptionCount,
+      };
+    } else {
+      return {
+        key: uniqueKey,
+        date: `${day}, ${monthName}`,
+        day,
+        dailyNorm: '0',
         percentage: '0',
         consumptionCount: 0,
       };
@@ -220,3 +228,4 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
 
   return monthlyData;
 };
+

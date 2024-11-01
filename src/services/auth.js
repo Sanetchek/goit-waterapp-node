@@ -76,26 +76,53 @@ export const login = async ({ email, password }) => {
   return { user: sanitizeUser(user), session: userSession };
 };
 
-export const refreshSession = async ({ refreshToken, sessionId }) => {
+export const refreshSession = async ({
+  token,
+  refreshToken,
+  sessionId
+}) => {
   const oldSession = await SessionCollection.findOne({
     _id: sessionId,
     refreshToken,
   });
   if (!oldSession) throw createHttpError(401, 'Session not found');
-  if (new Date() > oldSession.refreshTokenValidUntil)
-    throw createHttpError(401, 'Session token expired');
 
+  // Check if the provided token is still valid
+  if (token && new Date() <= oldSession.accessTokenValidUntil) {
+    // Token is valid, return the existing session and user
+    const user = await UserCollection.findById(oldSession.userId);
+    if (!user) throw createHttpError(401, 'User not found');
+
+    return {
+      isRefreshed: false,
+      user: sanitizeUser(user),
+      session: oldSession
+    };
+  }
+
+  // If token is expired, check if the refresh token is still valid
+  if (new Date() > oldSession.refreshTokenValidUntil) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  // Otherwise, create a new session
   const user = await UserCollection.findById(oldSession.userId);
   if (!user) throw createHttpError(401, 'User not found');
 
-  await SessionCollection.deleteOne({ _id: sessionId });
+  await SessionCollection.deleteOne({
+    _id: sessionId
+  });
   const sessionData = createSession();
   const userSession = await SessionCollection.create({
     userId: user._id,
     ...sessionData,
   });
 
-  return { user: sanitizeUser(user), session: userSession };
+  return {
+    isRefreshed: true,
+    user: sanitizeUser(user),
+    session: userSession
+  };
 };
 
 export const findSessionByAccessToken = (accessToken) =>
