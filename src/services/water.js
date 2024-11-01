@@ -158,6 +158,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
 
     acc[noteDate].totalAmount += note.amount;
     acc[noteDate].consumptionCount += 1;
+    acc[noteDate].dailyNorm = note.dailyNorm;
 
     return acc;
   }, {});
@@ -167,7 +168,9 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
   const monthlyData = Array.from({
     length: daysInMonth
   }, (_, index) => {
-    const todayDay = new Date().getDate();
+    const todaysDate = new Date();
+    const currentMonth = todaysDate.getMonth() + 1;
+    const todayDay = todaysDate.getDate();
     const day = index + 1; // This gives the correct day (1 to daysInMonth)
     const date = new Date(year, month - 1, day);
     const dateString = date.toLocaleDateString('en-CA'); // Format date to 'YYYY-MM-DD' in local timezone
@@ -178,7 +181,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
     // Construct the unique key with the correct day of the month formatted as 'YYYY-MM-DD'
     const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-    if (todayDay === day) {
+    if (Number(currentMonth) === Number(month) && todayDay === day) {
       const {
         totalAmount,
         consumptionCount
@@ -198,7 +201,8 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
     } else if (groupedNotes[dateString]) {
       const {
         totalAmount,
-        consumptionCount
+        consumptionCount,
+        dailyNorm
       } = groupedNotes[dateString];
       const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
 
@@ -215,7 +219,7 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
         key: uniqueKey,
         date: `${day}, ${monthName}`,
         day,
-        dailyNorm: `${dailyNorm}`,
+        dailyNorm: '0',
         percentage: '0',
         consumptionCount: 0,
       };
