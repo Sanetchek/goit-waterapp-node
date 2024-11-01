@@ -10,9 +10,9 @@ const sanitizeUser = (user) => {
   return cleanUser;
 };
 
-export const getUserById = async (id) => {
-  const users = await UserCollection.findById(id);
-  return sanitizeUser(users);
+export const getUserById = async (userId) => {
+  const user = await UserCollection.findById(userId);
+  return sanitizeUser(user);
 };
 
 export const updateUsers = async (filter, data, options) => {
@@ -23,8 +23,10 @@ export const updateUsers = async (filter, data, options) => {
   });
   if (!rawResult || !rawResult.value) return null;
 
+  const user = rawResult.value;
+
   return {
-    data: rawResult.value,
+    data: sanitizeUser(user),
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
 };
