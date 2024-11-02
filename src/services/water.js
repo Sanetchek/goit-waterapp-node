@@ -141,7 +141,9 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
   });
 
   const user = await UserCollection.findById(userId);
-  const userDailyNorm = user?.dailyNormWater || 0; // Default to 0 if userDailyNorm is undefined
+
+  // Assume all notes have the same dailyNorm for the month if there are records
+  let dailyNorm = waterNotes.length > 0 ? waterNotes[0].dailyNorm : 0;
 
   // Group water notes by day
   const groupedNotes = waterNotes.reduce((acc, note) => {
@@ -151,12 +153,12 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
       acc[noteDate] = {
         totalAmount: 0,
         consumptionCount: 0,
-        dailyNorm: note.dailyNorm || userDailyNorm,
       };
     }
 
     acc[noteDate].totalAmount += note.amount;
     acc[noteDate].consumptionCount += 1;
+    acc[noteDate].dailyNorm = note.dailyNorm;
 
     return acc;
   }, {});
@@ -166,27 +168,64 @@ export const getMonthlyWaterConsumptionService = async (userId, year, month) => 
   const monthlyData = Array.from({
     length: daysInMonth
   }, (_, index) => {
-    const day = index + 1;
+    const todaysDate = new Date();
+    const currentMonth = todaysDate.getMonth() + 1;
+    const todayDay = todaysDate.getDate();
+    const day = index + 1; // This gives the correct day (1 to daysInMonth)
     const date = new Date(year, month - 1, day);
-    const dateString = date.toLocaleDateString('en-CA'); // Format date to 'YYYY-MM-DD'
+    const dateString = date.toLocaleDateString('en-CA'); // Format date to 'YYYY-MM-DD' in local timezone
     const monthName = date.toLocaleString('en-US', {
       month: 'long'
-    });
+    }); // Get the month name
+
+    // Construct the unique key with the correct day of the month formatted as 'YYYY-MM-DD'
     const uniqueKey = `${userId}-${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-    const {
-      totalAmount = 0, consumptionCount = 0, dailyNorm = userDailyNorm
-    } = groupedNotes[dateString] || {};
-    const percentage = dailyNorm ? Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100) : '0';
+    if (Number(currentMonth) === Number(month) && todayDay === day) {
+      const {
+        totalAmount,
+        consumptionCount
+      } = groupedNotes[dateString];
+      dailyNorm = user.dailyNormWater;
+      const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
 
-    return {
-      key: uniqueKey,
-      date: `${day}, ${monthName}`,
-      day,
-      dailyNorm: dailyNorm.toString(),
-      percentage: percentage.toString(),
-      consumptionCount,
-    };
+      // Return null or default values for days with no data
+      return {
+        key: uniqueKey, // Add unique key
+        date: `${day}, ${monthName}`, // This correctly reflects the current day
+        day,
+        dailyNorm: `${dailyNorm}`,
+        percentage,
+        consumptionCount,
+      };
+    } else if (groupedNotes[dateString]) {
+      const {
+        totalAmount,
+        consumptionCount,
+        dailyNorm
+      } = groupedNotes[dateString];
+      const percentage = Math.min(((totalAmount / dailyNorm) * 100).toFixed(2), 100).toString();
+
+      return {
+        key: uniqueKey,
+        date: `${day}, ${monthName}`,
+        day,
+        dailyNorm: `${dailyNorm}`,
+        percentage,
+        consumptionCount,
+      };
+    } else {
+      return {
+        key: uniqueKey,
+        date: `${day}, ${monthName}`,
+        day,
+        dailyNorm: '0',
+        percentage: '0',
+        consumptionCount: 0,
+      };
+    }
   });
+
+  return monthlyData;
 };
 
